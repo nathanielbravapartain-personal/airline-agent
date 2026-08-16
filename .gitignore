@@ -1,0 +1,43 @@
+
+# Raw data files — too large for GitHub
+data/demand_data/
+data/route_data/
+data/*.duckdb
+data/**/*.csv
+data/**/*.zip
+data/*.csv
+data/*.zip
+
+# Keep the production database
+!data/airline_prod.duckdb
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+
+# ignore posit ai
+.positai
+
+# ignore files (likely datasets) if too large (> 100 MB)
+# specify pathway to dataset data/project_dataset.csv
+# if all datasets are too large then use data/*.csv (only ignores CSVs)
+# if you have other file types then use appropriate extension data/*.rds
+# Terminal code to find files that are too large
+# find . -size +100M | sed 's|^\./||g' | cat >> .gitignore; awk '!NF || !seen[$0]++' .gitignore
+
+
+results/rf_tune_res.rda
+results/xgb_tune_res.rda
+results/scoring_rf_tune_res.rda
+results/scoring_xgb_tune_res.rda
+results/scoring_xgb_tune_res.rda
+
+splits/route_folds.rda
+splits/scoring_folds.rda
+
+# Misc
+frontend/file_shrinking.R
+data/readme.html
