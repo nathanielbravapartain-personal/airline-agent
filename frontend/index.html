@@ -406,7 +406,9 @@ CRITICAL RULES — follow these exactly:
 
 7. HONEST CAVEATS: The data is from 2022. Route scoring has RSQ ~0.38 — use it as directional signal, not precise prediction. State this when relevant, once, concisely.
 
-8. TOOL-FIRST: Call tools before writing analysis. For compound questions, call all relevant tools first, then synthesize.`;
+8. TOOL-FIRST: Call tools before writing analysis. For compound questions, call all relevant tools first, then synthesize.
+
+9. VERIFY BEFORE RECOMMENDING: Before recommending any specific new route, call get_route_status to confirm it has zero or limited nonstop service. Never recommend a route without checking its current service status first.`;
 
     const TOOLS = [
       {
@@ -539,6 +541,18 @@ CRITICAL RULES — follow these exactly:
             quarter:            { type: "number" }
           },
           required: []
+        }
+      },
+      {
+        name: "get_route_status",
+        description: "Check whether a specific route is currently served nonstop and by which carriers. Always call this before recommending a new route to confirm it is not already operated.",
+        input_schema: {
+          type: "object",
+          properties: {
+            origin: { type: "string", description: "Origin IATA code" },
+            dest:   { type: "string", description: "Destination IATA code" }
+          },
+          required: ["origin", "dest"]
         }
       }
     ];

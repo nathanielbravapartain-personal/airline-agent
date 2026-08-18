@@ -204,4 +204,20 @@ get_carrier_overlap <- function(con, carrier_a, carrier_b,
   "))
 }
 
+# Add to competitor_analysis/02_queries.R
+get_route_status <- function(con, origin, dest) {
+  dbGetQuery(con, glue::glue("
+    SELECT
+      c.carrier,
+      c.carrier_name,
+      SUM(c.total_departures)      AS annual_departures,
+      SUM(c.total_passengers_t100) AS annual_passengers,
+      ROUND(AVG(c.load_factor), 3) AS avg_load_factor,
+      c.aircraft_name
+    FROM carrier_route_summary c
+    WHERE c.origin = '{origin}' AND c.dest = '{dest}'
+    GROUP BY c.carrier, c.carrier_name, c.aircraft_name
+    ORDER BY annual_passengers DESC
+  "))
+}
 

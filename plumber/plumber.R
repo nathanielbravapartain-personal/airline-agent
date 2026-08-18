@@ -286,3 +286,19 @@ function(carrier_code       = NULL,
     
   }, error = function(e) list(error = conditionMessage(e)))
 }
+
+
+#* Check whether a specific route is currently served and by whom
+#* @param origin Origin IATA code
+#* @param dest Destination IATA code
+#* @get /route/status
+function(origin, dest) {
+  tryCatch({
+    result <- get_route_status(con, origin, dest)
+    list(
+      route   = paste(origin, dest, sep = "-"),
+      served  = nrow(result) > 0,
+      carriers = result
+    )
+  }, error = function(e) list(error = conditionMessage(e)))
+}
