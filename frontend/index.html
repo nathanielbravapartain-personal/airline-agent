@@ -25,14 +25,22 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body, #root {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: 'Space Grotesk', sans-serif;
       background: var(--navy);
       color: var(--text);
-      height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+    }
+
+    #root {
+      display: flex;
+      flex-direction: column;
     }
 
     /* ── Header ─────────────────────────────────────────────────── */
@@ -41,77 +49,41 @@
       border-bottom: 1px solid var(--border);
       padding: 0 20px;
       height: 52px;
+      min-height: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-icon {
-      width: 28px;
-      height: 28px;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-    }
-
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon { width: 28px; height: 28px; }
+    .brand-text { display: flex; flex-direction: column; }
     .brand-name {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text);
-      line-height: 1;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text); line-height: 1;
     }
-
     .brand-sub {
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
+      font-size: 10px; color: var(--text-dim);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px;
     }
 
     .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--text-dim);
-      background: var(--navy);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 10px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--text-dim);
+      background: var(--navy); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 10px;
     }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--text-dim);
-    }
-
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); }
     .status-dot.online  { background: var(--success); }
     .status-dot.offline { background: var(--error); }
 
-    /* ── Layout ──────────────────────────────────────────────────── */
+    /* ── Main layout ─────────────────────────────────────────────── */
     .main {
       display: flex;
       flex: 1;
+      min-height: 0; /* critical for flex scroll children */
       overflow: hidden;
     }
 
@@ -121,233 +93,155 @@
       display: flex;
       flex-direction: column;
       min-width: 0;
+      overflow: hidden;
     }
 
-    .messages {
+    .messages-wrap {
       flex: 1;
       overflow-y: auto;
-      padding: 24px 24px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+      min-height: 0; /* critical */
     }
 
-    .messages::-webkit-scrollbar { width: 3px; }
-    .messages::-webkit-scrollbar-track { background: transparent; }
-    .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .messages-wrap::-webkit-scrollbar { width: 4px; }
+    .messages-wrap::-webkit-scrollbar-track { background: transparent; }
+    .messages-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .messages-inner {
+      padding: 24px 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
     /* ── Empty state ─────────────────────────────────────────────── */
     .empty {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      color: var(--text-dim);
-      text-align: center;
-      padding: 40px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px; color: var(--text-dim);
+      text-align: center; padding: 60px 40px;
+      min-height: 300px;
     }
-
-    .empty-radar {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 8px;
-      opacity: 0.4;
-    }
-
-    .empty-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .empty-sub {
-      font-size: 13px;
-      max-width: 280px;
-      line-height: 1.5;
-    }
+    .empty-radar { width: 64px; height: 64px; margin-bottom: 8px; opacity: 0.35; }
+    .empty-title { font-size: 18px; font-weight: 600; color: var(--text); }
+    .empty-sub { font-size: 13px; max-width: 300px; line-height: 1.6; }
 
     /* ── Messages ────────────────────────────────────────────────── */
-    .msg {
-      display: flex;
-      gap: 10px;
-      max-width: 88%;
-    }
-
-    .msg.user {
-      align-self: flex-end;
-      flex-direction: row-reverse;
-    }
-
-    .msg.assistant {
-      align-self: flex-start;
-    }
+    .msg { display: flex; gap: 10px; }
+    .msg.user { flex-direction: row-reverse; }
 
     .msg-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 2px;
+      width: 30px; height: 30px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
     }
+    .msg.user .msg-avatar     { background: var(--amber); color: var(--navy); }
+    .msg.assistant .msg-avatar { background: var(--steel); color: var(--text); }
 
-    .msg.user .msg-avatar {
-      background: var(--amber);
-      color: var(--navy);
-    }
-
-    .msg.assistant .msg-avatar {
-      background: var(--steel);
-      color: var(--text);
-    }
-
-    .msg-body {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .msg-body { display: flex; flex-direction: column; gap: 6px; max-width: 88%; }
+    .msg.user .msg-body { align-items: flex-end; }
 
     .msg-bubble {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 14px;
-      line-height: 1.65;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px;
+      font-size: 14px; line-height: 1.65;
     }
-
     .msg.user .msg-bubble {
-      background: var(--surface2);
-      border-color: var(--amber-dim);
+      background: var(--surface2); border-color: var(--amber-dim);
     }
 
+    /* Markdown styles inside bubbles */
+    .msg-bubble h2 {
+      font-size: 15px; font-weight: 700; color: var(--amber);
+      margin: 14px 0 8px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .msg-bubble h2:first-child { margin-top: 0; }
+    .msg-bubble h3 {
+      font-size: 13px; font-weight: 600; color: var(--teal);
+      margin: 12px 0 6px; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .msg-bubble h3:first-child { margin-top: 0; }
     .msg-bubble p { margin-bottom: 8px; }
     .msg-bubble p:last-child { margin-bottom: 0; }
     .msg-bubble strong { color: var(--amber); font-weight: 600; }
     .msg-bubble em { color: var(--teal); font-style: normal; font-weight: 500; }
-    .msg-bubble ul, .msg-bubble ol { margin: 6px 0 6px 18px; }
-    .msg-bubble li { margin-bottom: 3px; }
-    .msg-bubble code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      background: var(--navy);
-      padding: 1px 5px;
-      border-radius: 4px;
-      color: var(--teal);
+    .msg-bubble ul, .msg-bubble ol { margin: 6px 0 8px 18px; }
+    .msg-bubble li { margin-bottom: 4px; line-height: 1.5; }
+    .msg-bubble hr {
+      border: none; border-top: 1px solid var(--border); margin: 12px 0;
     }
+    .msg-bubble code {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      background: var(--navy); padding: 2px 6px; border-radius: 4px; color: var(--teal);
+    }
+
+    /* Table styles */
+    .msg-bubble table {
+      width: 100%; border-collapse: collapse;
+      margin: 10px 0; font-size: 12.5px;
+    }
+    .msg-bubble th {
+      background: var(--navy); color: var(--amber);
+      padding: 7px 10px; text-align: left; font-weight: 600;
+      border: 1px solid var(--border); font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .msg-bubble td {
+      padding: 7px 10px; border: 1px solid var(--border);
+      color: var(--text); vertical-align: top;
+    }
+    .msg-bubble tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
 
     /* ── Tool calls ──────────────────────────────────────────────── */
     .tool-call {
-      border: 1px solid rgba(45, 212, 191, 0.3);
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(45, 212, 191, 0.03);
+      border: 1px solid rgba(45,212,191,0.25);
+      border-radius: 8px; overflow: hidden;
+      background: rgba(45,212,191,0.03);
     }
-
     .tool-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
-      cursor: pointer;
-      user-select: none;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; cursor: pointer; user-select: none;
     }
-
-    .tool-icon {
-      font-size: 12px;
-      color: var(--teal);
-    }
-
+    .tool-icon { font-size: 11px; color: var(--teal); }
     .tool-name {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--teal);
-      font-weight: 500;
+      font-size: 11px; color: var(--teal); font-weight: 500;
     }
-
     .tool-badge {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 10px;
-      margin-left: auto;
-      font-weight: 600;
-      letter-spacing: 0.05em;
+      font-size: 10px; padding: 2px 7px; border-radius: 10px;
+      margin-left: auto; font-weight: 600; letter-spacing: 0.04em;
     }
-
-    .tool-badge.running {
-      background: rgba(245, 166, 35, 0.15);
-      color: var(--amber);
-    }
-
-    .tool-badge.done {
-      background: rgba(34, 197, 94, 0.12);
-      color: var(--success);
-    }
-
-    .tool-badge.error {
-      background: rgba(239, 68, 68, 0.12);
-      color: var(--error);
-    }
-
-    .tool-chevron {
-      font-size: 10px;
-      color: var(--text-dim);
-      transition: transform 0.2s;
-    }
-
+    .tool-badge.running { background: rgba(245,166,35,0.12); color: var(--amber); }
+    .tool-badge.done    { background: rgba(34,197,94,0.1);   color: var(--success); }
+    .tool-badge.error   { background: rgba(239,68,68,0.1);   color: var(--error); }
+    .tool-chevron { font-size: 10px; color: var(--text-dim); transition: transform 0.2s; }
     .tool-chevron.open { transform: rotate(180deg); }
-
     .tool-body {
-      border-top: 1px solid rgba(45, 212, 191, 0.15);
-      padding: 10px;
+      border-top: 1px solid rgba(45,212,191,0.12);
+      padding: 10px 12px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      color: var(--text-dim);
-      max-height: 180px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-      line-height: 1.5;
+      font-size: 10.5px; color: var(--text-dim);
+      max-height: 200px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-all; line-height: 1.5;
     }
 
     /* ── Thinking ────────────────────────────────────────────────── */
     .thinking {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: flex; align-items: center; gap: 10px;
       padding: 12px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 13px;
-      color: var(--text-dim);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; font-size: 13px; color: var(--text-dim);
     }
-
-    .dots {
-      display: flex;
-      gap: 4px;
-    }
-
+    .dots { display: flex; gap: 4px; }
     .dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--steel);
-      animation: throb 1.2s ease-in-out infinite;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--steel); animation: throb 1.2s ease-in-out infinite;
     }
-
     .dot:nth-child(2) { animation-delay: 0.15s; }
-    .dot:nth-child(3) { animation-delay: 0.3s; }
-
+    .dot:nth-child(3) { animation-delay: 0.30s; }
     @keyframes throb {
-      0%, 100% { opacity: 0.3; transform: scale(0.85); }
-      50%       { opacity: 1;   transform: scale(1); }
+      0%,100% { opacity: 0.3; transform: scale(0.85); }
+      50%      { opacity: 1;   transform: scale(1); }
     }
 
     /* ── Input area ──────────────────────────────────────────────── */
@@ -356,225 +250,128 @@
       border-top: 1px solid var(--border);
       flex-shrink: 0;
     }
-
-    .input-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
-
+    .input-row { display: flex; gap: 8px; align-items: flex-end; }
     .chat-input {
       flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 11px 14px;
-      color: var(--text);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 14px;
-      resize: none;
-      min-height: 42px;
-      max-height: 110px;
-      outline: none;
-      transition: border-color 0.15s;
-      line-height: 1.4;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 11px 14px;
+      color: var(--text); font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; resize: none; min-height: 44px; max-height: 120px;
+      outline: none; transition: border-color 0.15s; line-height: 1.4;
     }
-
     .chat-input:focus { border-color: var(--amber); }
     .chat-input::placeholder { color: var(--text-dim); }
+    .chat-input:disabled { opacity: 0.6; }
 
     .send-btn {
-      background: var(--amber);
-      border: none;
-      border-radius: 10px;
-      width: 42px;
-      height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--navy);
-      flex-shrink: 0;
-      transition: background 0.15s, transform 0.1s;
+      background: var(--amber); border: none; border-radius: 10px;
+      width: 44px; height: 44px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; color: var(--navy);
+      flex-shrink: 0; transition: background 0.15s, transform 0.1s;
     }
-
     .send-btn:hover:not(:disabled) { background: #f7b94d; }
     .send-btn:active:not(:disabled) { transform: scale(0.94); }
-    .send-btn:disabled {
-      background: var(--border);
-      color: var(--text-dim);
-      cursor: not-allowed;
-    }
-
+    .send-btn:disabled { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
     .send-btn svg { width: 18px; height: 18px; }
+
+    .stop-btn {
+      background: transparent; border: 1px solid var(--error);
+      border-radius: 10px; width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--error); flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .stop-btn:hover { background: rgba(239,68,68,0.1); }
 
     /* ── Config panel ────────────────────────────────────────────── */
     .config-panel {
-      width: 280px;
-      flex-shrink: 0;
+      width: 280px; flex-shrink: 0;
       border-left: 1px solid var(--border);
       background: var(--surface);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
+      display: flex; flex-direction: column;
+      overflow-y: auto; min-height: 0;
     }
-
     .config-panel::-webkit-scrollbar { width: 3px; }
     .config-panel::-webkit-scrollbar-thumb { background: var(--border); }
 
     .config-section {
-      padding: 16px;
-      border-bottom: 1px solid var(--border);
+      padding: 16px; border-bottom: 1px solid var(--border);
     }
-
     .config-section:last-child { border-bottom: none; }
-
     .section-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 10px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
     }
 
     .field-input {
-      width: 100%;
-      background: var(--navy);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 8px 10px;
-      color: var(--text);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 13px;
-      outline: none;
+      width: 100%; background: var(--navy); border: 1px solid var(--border);
+      border-radius: 7px; padding: 8px 10px; color: var(--text);
+      font-family: 'Space Grotesk', sans-serif; font-size: 13px; outline: none;
       transition: border-color 0.15s;
     }
-
     .field-input:focus { border-color: var(--amber); }
     .field-input::placeholder { color: var(--text-dim); }
-
-    .field-note {
-      font-size: 10.5px;
-      color: var(--text-dim);
-      margin-top: 6px;
-      line-height: 1.4;
-    }
+    .field-note { font-size: 10.5px; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
 
     /* Fleet items */
     .fleet-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--navy);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 7px 9px;
-      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 7px;
+      background: var(--navy); border: 1px solid var(--border);
+      border-radius: 7px; padding: 7px 9px; margin-bottom: 6px;
     }
-
-    .fleet-item-name {
-      flex: 1;
-      font-size: 11.5px;
-      color: var(--text);
-      line-height: 1.3;
-    }
-
+    .fleet-item-name { flex: 1; font-size: 11.5px; color: var(--text); line-height: 1.3; }
     .fleet-count-input {
-      width: 36px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 3px 5px;
-      color: var(--amber);
+      width: 36px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 5px;
+      padding: 3px 5px; color: var(--amber);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      text-align: center;
-      outline: none;
+      font-size: 12px; text-align: center; outline: none;
     }
-
     .fleet-remove-btn {
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      cursor: pointer;
-      font-size: 13px;
-      padding: 0 2px;
-      line-height: 1;
+      background: none; border: none; color: var(--text-dim);
+      cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1;
     }
-
     .fleet-remove-btn:hover { color: var(--error); }
 
-    .add-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
+    .add-row { display: flex; gap: 6px; margin-top: 8px; }
     .add-select {
-      flex: 1;
-      background: var(--navy);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 7px 8px;
-      color: var(--text);
-      font-size: 11px;
-      outline: none;
-      min-width: 0;
+      flex: 1; background: var(--navy); border: 1px solid var(--border);
+      border-radius: 7px; padding: 7px 8px; color: var(--text);
+      font-size: 11px; outline: none; min-width: 0;
     }
-
     .add-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 7px 10px;
-      color: var(--amber);
-      font-size: 12px;
-      cursor: pointer;
-      font-family: 'Space Grotesk', sans-serif;
-      white-space: nowrap;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 7px; padding: 7px 10px; color: var(--amber);
+      font-size: 12px; cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif; white-space: nowrap;
     }
-
     .add-btn:hover { border-color: var(--amber); }
 
     /* Quick prompts */
     .quick-btn {
-      width: 100%;
-      text-align: left;
-      background: var(--navy);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 9px 11px;
-      font-size: 11.5px;
-      color: var(--text-dim);
-      cursor: pointer;
-      font-family: 'Space Grotesk', sans-serif;
-      line-height: 1.4;
-      margin-bottom: 6px;
+      width: 100%; text-align: left;
+      background: var(--navy); border: 1px solid var(--border);
+      border-radius: 8px; padding: 9px 11px;
+      font-size: 11.5px; color: var(--text-dim);
+      cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.4; margin-bottom: 6px;
       transition: border-color 0.15s, color 0.15s;
     }
-
-    .quick-btn:hover {
-      border-color: var(--amber);
-      color: var(--text);
-    }
-
+    .quick-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--text); }
+    .quick-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .quick-btn:last-child { margin-bottom: 0; }
   </style>
 </head>
 <body>
   <div id="root"></div>
-
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
 
     const API_BASE = "https://airline-agent.onrender.com";
 
-    // ── System prompt ─────────────────────────────────────────────────────────
     const SYSTEM_PROMPT = `You are an airline route intelligence agent backed by real BTS (Bureau of Transportation Statistics) data from 2022. You help airline strategists make data-driven decisions.
 
 Your analytical capabilities:
@@ -587,26 +384,17 @@ Your analytical capabilities:
 When answering questions:
 1. Always call the relevant tools first — never guess at numbers when you have real data available
 2. Call multiple tools when needed to build a complete picture
-3. Be specific: cite actual passenger counts, load factors, fares, carrier names, and aircraft types from the data
-4. Structure compound recommendations clearly: opportunity → demand evidence → competitor landscape → aircraft recommendation → redeployment source
-5. Flag limitations honestly: data is from 2022, load factor model has RSQ ~0.38 (directionally useful, not precise), demand model has RSQ ~0.73
+3. Be specific: cite actual passenger counts, load factors, fares, carrier names, and aircraft types
+4. Format your responses clearly using headers (##), bullet points, and tables where appropriate
+5. For compound recommendations follow: opportunity → demand evidence → competitor landscape → aircraft recommendation → redeployment source
+6. Flag model limitations honestly: data is from 2022, route scoring RSQ ~0.38 (directional), demand model RSQ ~0.73
 
-Typical workflow for a new route recommendation:
-1. Call get_underserved_markets to find the opportunity
-2. Call predict_demand for the specific route with realistic fare assumptions
-3. Call score_route to assess likely load factor
-4. Call get_market_concentration to understand the competitive context
-5. Call optimize_fleet with the user's fleet to find the best aircraft
-6. Call get_redeployment_candidates to find where to source the aircraft from
-7. Synthesize into a clear, specific recommendation
+Keep responses well-structured and scannable. Use ## for major sections, ### for subsections, tables for comparative data, and bullet points for lists.`;
 
-Be direct and analytical. This tool is for professionals making real business decisions.`;
-
-    // ── Tool definitions ──────────────────────────────────────────────────────
     const TOOLS = [
       {
         name: "predict_demand",
-        description: "Predict quarterly and annual passenger demand for a proposed or existing US domestic route using the demand forecasting model (RSQ 0.73). Requires fare and distance assumptions.",
+        description: "Predict quarterly and annual passenger demand for a proposed or existing US domestic route using the demand forecasting model (RSQ 0.73).",
         input_schema: {
           type: "object",
           properties: {
@@ -614,124 +402,124 @@ Be direct and analytical. This tool is for professionals making real business de
             dest:         { type: "string",  description: "Destination airport IATA code e.g. LAX" },
             avg_fare:     { type: "number",  description: "Expected average market fare in USD" },
             avg_distance: { type: "number",  description: "Route distance in statute miles" },
-            num_carriers: { type: "number",  description: "Number of carriers currently serving the route nonstop (0 for new routes)" },
-            quarter:      { type: "number",  description: "Quarter to predict for: 1=Q1 Jan-Mar, 2=Q2 Apr-Jun, 3=Q3 Jul-Sep, 4=Q4 Oct-Dec" }
+            num_carriers: { type: "number",  description: "Current nonstop carriers (0 for new routes)" },
+            quarter:      { type: "number",  description: "Quarter: 1=Q1, 2=Q2, 3=Q3, 4=Q4" }
           },
           required: ["origin", "dest", "avg_fare", "avg_distance"]
         }
       },
       {
         name: "score_route",
-        description: "Predict expected load factor (seat utilization 0–1) for a proposed route using the route scoring model (RSQ 0.38 — directional signal, not precise). Returns score and interpretation.",
+        description: "Predict expected load factor (0-1) for a proposed route using the route scoring model (RSQ 0.38 — directional signal).",
         input_schema: {
           type: "object",
           properties: {
-            avg_distance:           { type: "number", description: "Route distance in statute miles" },
+            avg_distance:           { type: "number", description: "Route distance in miles" },
             num_operators:          { type: "number", description: "Current nonstop operators (0 = new route)" },
-            total_departures:       { type: "number", description: "Expected quarterly departures: 91=daily, 182=twice daily, 273=three times daily" },
-            primary_aircraft_class: { type: "string", enum: ["narrowbody", "widebody", "regional_jet", "regional_turboprop"], description: "Aircraft class planned for the route" },
-            quarter:                { type: "number", description: "Quarter to predict for (1–4)" }
+            total_departures:       { type: "number", description: "Expected quarterly departures: 91=daily, 182=twice daily" },
+            primary_aircraft_class: { type: "string", enum: ["narrowbody","widebody","regional_jet","regional_turboprop"] },
+            quarter:                { type: "number", description: "Quarter (1-4)" }
           },
           required: ["avg_distance"]
         }
       },
       {
         name: "get_route_competitors",
-        description: "Get all carriers currently operating a route nonstop, with their quarterly market share, load factor, aircraft type, and passenger counts.",
+        description: "Get all carriers operating a route nonstop with market share, load factor, and aircraft type.",
         input_schema: {
           type: "object",
           properties: {
-            origin: { type: "string", description: "Origin airport IATA code" },
-            dest:   { type: "string", description: "Destination airport IATA code" },
-            year:   { type: "number", description: "Year to analyze (default 2022)" }
+            origin: { type: "string", description: "Origin IATA code" },
+            dest:   { type: "string", description: "Destination IATA code" },
+            year:   { type: "number", description: "Year (default 2022)" }
           },
           required: ["origin", "dest"]
         }
       },
       {
         name: "get_market_concentration",
-        description: "Get the HHI (Herfindahl-Hirschman Index) market concentration for a route by quarter. HHI < 1500 = competitive, 1500–2500 = moderate, > 2500 = concentrated, 10000 = monopoly.",
+        description: "Get HHI market concentration for a route. HHI < 1500 = competitive, 1500-2500 = moderate, > 2500 = concentrated.",
         input_schema: {
           type: "object",
           properties: {
-            origin: { type: "string", description: "Origin airport IATA code" },
-            dest:   { type: "string", description: "Destination airport IATA code" },
-            year:   { type: "number", description: "Year to analyze (default 2022)" }
+            origin: { type: "string" },
+            dest:   { type: "string" },
+            year:   { type: "number" }
           },
           required: ["origin", "dest"]
         }
       },
       {
         name: "get_carrier_profile",
-        description: "Get network summary and top 10 routes for a specific carrier: total routes, annual passengers, average load factor, fleet profile.",
+        description: "Get network summary and top routes for a carrier.",
         input_schema: {
           type: "object",
           properties: {
-            carrier_code: { type: "string", description: "IATA carrier code: UA=United, DL=Delta, AA=American, WN=Southwest, B6=JetBlue, NK=Spirit, AS=Alaska, HA=Hawaiian, F9=Frontier, G4=Allegiant, OO=SkyWest" }
+            carrier_code: { type: "string", description: "IATA code: UA=United, DL=Delta, AA=American, WN=Southwest, B6=JetBlue, NK=Spirit, AS=Alaska, HA=Hawaiian, F9=Frontier, G4=Allegiant" }
           },
           required: ["carrier_code"]
         }
       },
       {
         name: "get_underserved_markets",
-        description: "Find US domestic route markets with high passenger demand but zero or few nonstop operators — these are new route launch opportunities, ranked by estimated annual passengers.",
+        description: "Find US domestic routes with high demand but zero or few nonstop operators — new route opportunities.",
         input_schema: {
           type: "object",
           properties: {
-            min_passengers: { type: "number", description: "Minimum quarterly DB1B sample passengers (default 500, represents ~5000 actual quarterly passengers)" },
-            max_carriers:   { type: "number", description: "Maximum current nonstop carriers to include: 0 = completely unserved, 1 = monopoly routes only" },
-            max_results:    { type: "number", description: "Number of results to return (default 20)" }
+            min_passengers: { type: "number", description: "Min quarterly DB1B passengers (default 500)" },
+            max_carriers:   { type: "number", description: "Max current nonstop carriers: 0=completely unserved" },
+            max_results:    { type: "number", description: "Results to return (default 20)" }
           },
           required: []
         }
       },
       {
         name: "get_carrier_overlap",
-        description: "Find routes where two carriers compete head to head, ranked by combined passenger volume. Useful for competitive positioning analysis.",
+        description: "Find routes where two carriers compete head to head.",
         input_schema: {
           type: "object",
           properties: {
-            carrier_a: { type: "string", description: "First carrier IATA code" },
-            carrier_b: { type: "string", description: "Second carrier IATA code" }
+            carrier_a: { type: "string" },
+            carrier_b: { type: "string" }
           },
           required: ["carrier_a", "carrier_b"]
         }
       },
       {
         name: "optimize_fleet",
-        description: "Run integer programming fleet assignment optimization: given a fleet of aircraft, find the optimal assignment to candidate new routes that maximizes expected annual passengers subject to range and fleet size constraints.",
+        description: "Integer programming fleet assignment: assign aircraft types to candidate routes maximizing expected passengers within range and fleet constraints.",
         input_schema: {
           type: "object",
           properties: {
             fleet: {
               type: "array",
-              description: "Aircraft available for assignment. If omitted, the fleet configured in the sidebar is used automatically.",
+              description: "Aircraft fleet (uses sidebar config if omitted)",
               items: {
                 type: "object",
                 properties: {
-                  aircraft_name: { type: "string", description: "Aircraft name e.g. Boeing 737-800, Airbus A321neo" },
-                  count:         { type: "number", description: "Number of that aircraft available" }
+                  aircraft_name: { type: "string" },
+                  count:         { type: "number" }
                 },
                 required: ["aircraft_name", "count"]
               }
             },
-            departures_per_quarter: { type: "number", description: "Assumed quarterly departures per route: 91=once daily, 182=twice daily" },
-            quarter:                { type: "number", description: "Quarter to optimize for (1–4)" },
-            min_passengers:         { type: "number", description: "Minimum demand threshold for candidate routes (default 500)" }
+            departures_per_quarter: { type: "number", description: "Quarterly departures: 91=daily, 182=twice daily" },
+            quarter:                { type: "number" },
+            min_passengers:         { type: "number" }
           },
           required: []
         }
       },
       {
         name: "get_redeployment_candidates",
-        description: "Find existing routes where actual load factor is significantly below model-predicted load factor — these routes have excess capacity that could be redeployed to better opportunities.",
+        description: "Find routes where actual load factor is significantly below predicted — excess capacity to redeploy.",
         input_schema: {
           type: "object",
           properties: {
-            carrier_code:       { type: "string",  description: "Filter to a specific carrier IATA code (omit for all carriers)" },
-            lf_gap_threshold:   { type: "number",  description: "Minimum gap between predicted and actual load factor to flag a route as underperforming (default 0.10 = 10 percentage points)" },
-            min_seats_deployed: { type: "number",  description: "Minimum quarterly seats deployed to include (default 10000 — filters out very thin routes)" },
-            quarter:            { type: "number",  description: "Quarter to analyze (1–4)" }
+            carrier_code:       { type: "string",  description: "Filter to specific carrier (omit for all)" },
+            lf_gap_threshold:   { type: "number",  description: "Min LF gap to flag route (default 0.10)" },
+            min_seats_deployed: { type: "number",  description: "Min quarterly seats (default 10000)" },
+            quarter:            { type: "number" }
           },
           required: []
         }
@@ -757,11 +545,11 @@ Be direct and analytical. This tool is for professionals making real business de
 
     const QUICK_PROMPTS = [
       "What are the top unserved route opportunities right now?",
-      "Analyze the SJU-LAX market — demand, competitors, and whether it's worth launching.",
-      "Which routes in my fleet are underperforming and could free up capacity?",
-      "Run a full fleet optimization and tell me the best assignments.",
-      "Compare Delta and United's competitive overlap — where are they fighting hardest?",
-      "What's the best aircraft for a new ORD-SJU service based on the data?"
+      "Analyze the SJU-LAX market — demand, competitors, and viability.",
+      "Which routes are underperforming and could free up capacity?",
+      "Run a full fleet optimization across candidate routes.",
+      "Compare Delta and United's head-to-head competitive overlap.",
+      "What's the best aircraft for a new ORD-SJU service?"
     ];
 
     // ── Tool executor ─────────────────────────────────────────────────────────
@@ -769,63 +557,29 @@ Be direct and analytical. This tool is for professionals making real business de
       const buildUrl = (path, params = {}) => {
         const url = new URL(API_BASE + path);
         Object.entries(params).forEach(([k, v]) => {
-          if (v !== undefined && v !== null && v !== "") {
-            url.searchParams.set(k, String(v));
-          }
+          if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
         });
         return url.toString();
       };
-
       const getJson = async (url) => {
         const res = await fetch(url);
-        if (!res.ok) {
-          const err = await res.text().catch(() => res.statusText);
-          throw new Error(`API ${res.status}: ${err}`);
-        }
+        if (!res.ok) throw new Error(`API ${res.status}`);
         return res.json();
       };
-
       switch (toolName) {
-        case "predict_demand":
-          return getJson(buildUrl("/demand/predict", input));
-
-        case "score_route":
-          return getJson(buildUrl("/route/score", input));
-
-        case "get_route_competitors":
-          return getJson(buildUrl("/competitors/route", input));
-
-        case "get_market_concentration":
-          return getJson(buildUrl("/competitors/concentration", input));
-
-        case "get_carrier_profile":
-          return getJson(buildUrl("/competitors/carrier", { carrier_code: input.carrier_code }));
-
-        case "get_underserved_markets":
-          return getJson(buildUrl("/competitors/underserved", input));
-
-        case "get_carrier_overlap":
-          return getJson(buildUrl("/competitors/overlap", {
-            carrier_a: input.carrier_a,
-            carrier_b: input.carrier_b
-          }));
-
+        case "predict_demand":          return getJson(buildUrl("/demand/predict", input));
+        case "score_route":             return getJson(buildUrl("/route/score", input));
+        case "get_route_competitors":   return getJson(buildUrl("/competitors/route", input));
+        case "get_market_concentration":return getJson(buildUrl("/competitors/concentration", input));
+        case "get_carrier_profile":     return getJson(buildUrl("/competitors/carrier", { carrier_code: input.carrier_code }));
+        case "get_underserved_markets": return getJson(buildUrl("/competitors/underserved", input));
+        case "get_carrier_overlap":     return getJson(buildUrl("/competitors/overlap", { carrier_a: input.carrier_a, carrier_b: input.carrier_b }));
         case "optimize_fleet": {
-          const body = {
-            fleet:                  input.fleet && input.fleet.length > 0 ? input.fleet : fleet,
-            departures_per_quarter: input.departures_per_quarter || 91,
-            quarter:                input.quarter || 2,
-            min_passengers:         input.min_passengers || 500
-          };
-          const res = await fetch(`${API_BASE}/fleet/optimize`, {
-            method:  "POST",
-            headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify(body)
-          });
+          const body = { fleet: input.fleet?.length ? input.fleet : fleet, departures_per_quarter: input.departures_per_quarter || 91, quarter: input.quarter || 2, min_passengers: input.min_passengers || 500 };
+          const res = await fetch(`${API_BASE}/fleet/optimize`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
           if (!res.ok) throw new Error(`API ${res.status}`);
           return res.json();
         }
-
         case "get_redeployment_candidates": {
           const params = {};
           if (input.carrier_code)       params.carrier_code       = input.carrier_code;
@@ -834,212 +588,208 @@ Be direct and analytical. This tool is for professionals making real business de
           if (input.quarter)            params.quarter            = input.quarter;
           return getJson(buildUrl("/redeployment/candidates", params));
         }
-
-        default:
-          throw new Error(`Unknown tool: ${toolName}`);
+        default: throw new Error(`Unknown tool: ${toolName}`);
       }
     }
 
     // ── Agentic loop ──────────────────────────────────────────────────────────
-    async function runAgent({ messages, apiKey, fleet, onToolCall, onDone, onError }) {
+    async function runAgent({ messages, apiKey, fleet, onToolCall, onDone, onError, signal }) {
       let history = [...messages];
-
       while (true) {
+        if (signal?.aborted) return;
         let response, data;
         try {
           response = await fetch("https://api.anthropic.com/v1/messages", {
             method: "POST",
             headers: {
-              "Content-Type":         "application/json",
-              "x-api-key":            apiKey,
-              "anthropic-version":    "2023-06-01",
+              "Content-Type": "application/json",
+              "x-api-key": apiKey,
+              "anthropic-version": "2023-06-01",
               "anthropic-dangerous-direct-browser-access": "true"
             },
-            body: JSON.stringify({
-              model:      "claude-sonnet-4-6",
-              max_tokens: 4096,
-              system:     SYSTEM_PROMPT,
-              tools:      TOOLS,
-              messages:   history
-            })
+            body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 4096, system: SYSTEM_PROMPT, tools: TOOLS, messages: history }),
+            signal
           });
           data = await response.json();
-        } catch (e) {
-          onError(`Network error: ${e.message}. Make sure the Plumber API is running on localhost:8000.`);
+        } catch(e) {
+          if (e.name === "AbortError") return;
+          onError(`Network error: ${e.message}`);
           return;
         }
-
-        if (!response.ok) {
-          onError(data?.error?.message || `API error ${response.status}`);
-          return;
-        }
-
-        // Append assistant turn to history
+        if (!response.ok) { onError(data?.error?.message || `API error ${response.status}`); return; }
         history.push({ role: "assistant", content: data.content });
-
         if (data.stop_reason === "end_turn") {
-          const text = data.content
-            .filter(b => b.type === "text")
-            .map(b => b.text)
-            .join("\n");
+          const text = data.content.filter(b => b.type === "text").map(b => b.text).join("\n");
           onDone(text, history);
           return;
         }
-
         if (data.stop_reason === "tool_use") {
           const toolUseBlocks = data.content.filter(b => b.type === "tool_use");
-          const toolResults   = [];
-
+          const toolResults = [];
           for (const tu of toolUseBlocks) {
-            onToolCall({ id: tu.id, name: tu.name, input: tu.input, status: "running" });
-
-            let resultContent;
-            let isError = false;
-
+            if (signal?.aborted) return;
+            onToolCall({ id: tu.id, name: tu.name, status: "running" });
+            let resultContent; let isError = false;
             try {
               const result = await executeTool(tu.name, tu.input, fleet);
               resultContent = JSON.stringify(result, null, 2);
-              onToolCall({ id: tu.id, name: tu.name, input: tu.input, status: "done", result: resultContent });
-            } catch (e) {
-              resultContent = `Error calling ${tu.name}: ${e.message}`;
+              onToolCall({ id: tu.id, name: tu.name, status: "done", result: resultContent });
+            } catch(e) {
+              resultContent = `Error: ${e.message}`;
               isError = true;
-              onToolCall({ id: tu.id, name: tu.name, input: tu.input, status: "error", result: resultContent });
+              onToolCall({ id: tu.id, name: tu.name, status: "error", result: resultContent });
             }
-
-            toolResults.push({
-              type:        "tool_result",
-              tool_use_id: tu.id,
-              content:     resultContent,
-              ...(isError ? { is_error: true } : {})
-            });
+            toolResults.push({ type: "tool_result", tool_use_id: tu.id, content: resultContent, ...(isError ? { is_error: true } : {}) });
           }
-
           history.push({ role: "user", content: toolResults });
-          // loop continues
         }
       }
     }
 
-    // ── Simple markdown renderer ──────────────────────────────────────────────
-    function renderText(text) {
-      if (!text) return null;
-      const lines = text.split("\n");
-      const elements = [];
-      let i = 0;
-
-      while (i < lines.length) {
-        const line = lines[i];
-
-        if (line.startsWith("- ") || line.startsWith("* ")) {
-          const items = [];
-          while (i < lines.length && (lines[i].startsWith("- ") || lines[i].startsWith("* "))) {
-            items.push(lines[i].slice(2));
-            i++;
-          }
-          elements.push(
-            <ul key={elements.length}>
-              {items.map((item, j) => <li key={j} dangerouslySetInnerHTML={{ __html: formatInline(item) }} />)}
-            </ul>
-          );
-          continue;
-        }
-
-        if (line.trim() !== "") {
-          elements.push(
-            <p key={elements.length} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />
-          );
-        }
-        i++;
-      }
-      return elements;
-    }
-
+    // ── Markdown renderer ─────────────────────────────────────────────────────
     function formatInline(text) {
       return text
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/`(.+?)`/g,       "<code>$1</code>")
-        .replace(/\*(.+?)\*/g,     "<em>$1</em>");
+        .replace(/\*(.+?)\*/g,     "<em>$1</em>")
+        .replace(/~~(.+?)~~/g,     "<del>$1</del>");
     }
 
-    // ── ToolCallBlock component ───────────────────────────────────────────────
+    function parseMarkdown(text) {
+      if (!text) return [];
+      const lines = text.split("\n");
+      const blocks = [];
+      let i = 0;
+      while (i < lines.length) {
+        const line = lines[i];
+        if (line.startsWith("### ")) { blocks.push({ type: "h3", content: line.slice(4) }); i++; continue; }
+        if (line.startsWith("## "))  { blocks.push({ type: "h2", content: line.slice(3) }); i++; continue; }
+        if (line.startsWith("# "))   { blocks.push({ type: "h1", content: line.slice(2) }); i++; continue; }
+        if (/^[-*_]{3,}$/.test(line.trim())) { blocks.push({ type: "hr" }); i++; continue; }
+        if (line.trim().startsWith("|")) {
+          const tableLines = [];
+          while (i < lines.length && lines[i].trim().startsWith("|")) { tableLines.push(lines[i]); i++; }
+          blocks.push({ type: "table", lines: tableLines });
+          continue;
+        }
+        if (line.startsWith("- ") || line.startsWith("* ")) {
+          const items = [];
+          while (i < lines.length && (lines[i].startsWith("- ") || lines[i].startsWith("* "))) { items.push(lines[i].slice(2)); i++; }
+          blocks.push({ type: "ul", items });
+          continue;
+        }
+        if (/^\d+\.\s/.test(line)) {
+          const items = [];
+          while (i < lines.length && /^\d+\.\s/.test(lines[i])) { items.push(lines[i].replace(/^\d+\.\s/, "")); i++; }
+          blocks.push({ type: "ol", items });
+          continue;
+        }
+        if (line.trim() === "") { i++; continue; }
+        blocks.push({ type: "p", content: line });
+        i++;
+      }
+      return blocks;
+    }
+
+    function renderTable(lines, key) {
+      const rows = lines.filter(l => !/^\|[\s\-:|]+\|$/.test(l.trim()));
+      if (!rows.length) return null;
+      const parseRow = l => l.split("|").filter((_, i, a) => i > 0 && i < a.length - 1).map(c => c.trim());
+      const headers = parseRow(rows[0]);
+      const body = rows.slice(1);
+      return (
+        <table key={key}>
+          <thead><tr>{headers.map((h, i) => <th key={i} dangerouslySetInnerHTML={{ __html: formatInline(h) }} />)}</tr></thead>
+          <tbody>{body.map((row, i) => <tr key={i}>{parseRow(row).map((cell, j) => <td key={j} dangerouslySetInnerHTML={{ __html: formatInline(cell) }} />)}</tr>)}</tbody>
+        </table>
+      );
+    }
+
+    function renderMarkdown(text) {
+      return parseMarkdown(text).map((block, i) => {
+        switch (block.type) {
+          case "h1": return <h2 key={i} dangerouslySetInnerHTML={{ __html: formatInline(block.content) }} />;
+          case "h2": return <h2 key={i} dangerouslySetInnerHTML={{ __html: formatInline(block.content) }} />;
+          case "h3": return <h3 key={i} dangerouslySetInnerHTML={{ __html: formatInline(block.content) }} />;
+          case "hr": return <hr key={i} />;
+          case "p":  return <p  key={i} dangerouslySetInnerHTML={{ __html: formatInline(block.content) }} />;
+          case "ul": return <ul key={i}>{block.items.map((it, j) => <li key={j} dangerouslySetInnerHTML={{ __html: formatInline(it) }} />)}</ul>;
+          case "ol": return <ol key={i}>{block.items.map((it, j) => <li key={j} dangerouslySetInnerHTML={{ __html: formatInline(it) }} />)}</ol>;
+          case "table": return renderTable(block.lines, i);
+          default: return null;
+        }
+      });
+    }
+
+    // ── ToolCallBlock ─────────────────────────────────────────────────────────
     function ToolCallBlock({ name, status, result }) {
       const [open, setOpen] = useState(false);
-
-      const statusLabel = { running: "CALLING", done: "DONE", error: "ERROR" }[status] || status;
-
+      const label = { running: "CALLING", done: "DONE", error: "ERROR" }[status] || status;
       return (
         <div className="tool-call">
           <div className="tool-header" onClick={() => result && setOpen(o => !o)}>
             <span className="tool-icon">⬡</span>
             <span className="tool-name">{name}</span>
-            <span className={`tool-badge ${status}`}>{statusLabel}</span>
+            <span className={`tool-badge ${status}`}>{label}</span>
             {result && <span className={`tool-chevron ${open ? "open" : ""}`}>▾</span>}
           </div>
-          {open && result && (
-            <div className="tool-body">{result}</div>
-          )}
+          {open && result && <div className="tool-body">{result}</div>}
         </div>
       );
     }
 
-    // ── Message component ─────────────────────────────────────────────────────
+    // ── Message ───────────────────────────────────────────────────────────────
     function Message({ msg }) {
-      if (msg.type === "user") {
-        return (
-          <div className="msg user">
-            <div className="msg-avatar">N</div>
-            <div className="msg-body">
-              <div className="msg-bubble">{msg.text}</div>
+      if (msg.type === "user") return (
+        <div className="msg user">
+          <div className="msg-avatar">N</div>
+          <div className="msg-body"><div className="msg-bubble">{msg.text}</div></div>
+        </div>
+      );
+      if (msg.type === "thinking") return (
+        <div className="msg assistant">
+          <div className="msg-avatar">AI</div>
+          <div className="msg-body">
+            <div className="thinking">
+              <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
+              <span>{msg.text || "Analyzing…"}</span>
             </div>
           </div>
-        );
-      }
-
-      if (msg.type === "thinking") {
-        return (
-          <div className="msg assistant">
-            <div className="msg-avatar">AI</div>
-            <div className="msg-body">
-              <div className="thinking">
-                <div className="dots">
-                  <div className="dot" />
-                  <div className="dot" />
-                  <div className="dot" />
-                </div>
-                <span>{msg.text || "Analyzing…"}</span>
+        </div>
+      );
+      if (msg.type === "assistant") return (
+        <div className="msg assistant">
+          <div className="msg-avatar">AI</div>
+          <div className="msg-body">
+            {msg.toolCalls?.length > 0 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {msg.toolCalls.map(tc => <ToolCallBlock key={tc.id} name={tc.name} status={tc.status} result={tc.result} />)}
               </div>
-            </div>
+            )}
+            {msg.text && <div className="msg-bubble">{renderMarkdown(msg.text)}</div>}
           </div>
-        );
-      }
-
-      if (msg.type === "assistant") {
-        return (
-          <div className="msg assistant">
-            <div className="msg-avatar">AI</div>
-            <div className="msg-body">
-              {msg.toolCalls && msg.toolCalls.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  {msg.toolCalls.map(tc => (
-                    <ToolCallBlock key={tc.id} name={tc.name} status={tc.status} result={tc.result} />
-                  ))}
-                </div>
-              )}
-              {msg.text && (
-                <div className="msg-bubble">{renderText(msg.text)}</div>
-              )}
-            </div>
-          </div>
-        );
-      }
-
+        </div>
+      );
       return null;
     }
 
-    // ── RadarSVG ──────────────────────────────────────────────────────────────
-    function RadarSVG({ className }) {
+    // ── SVG icons ─────────────────────────────────────────────────────────────
+    function BrandRadar() {
       return (
-        <svg className={className} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className="brand-icon" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="13" stroke="#F5A623" strokeWidth="1.5" opacity="0.6"/>
+          <circle cx="14" cy="14" r="8"  stroke="#F5A623" strokeWidth="1"   opacity="0.4"/>
+          <circle cx="14" cy="14" r="3"  stroke="#F5A623" strokeWidth="1"   opacity="0.4"/>
+          <line x1="14" y1="1"  x2="14" y2="27" stroke="#F5A623" strokeWidth="0.8" opacity="0.3"/>
+          <line x1="1"  y1="14" x2="27" y2="14" stroke="#F5A623" strokeWidth="0.8" opacity="0.3"/>
+          <circle cx="14" cy="14" r="1.5" fill="#F5A623"/>
+        </svg>
+      );
+    }
+
+    function EmptyRadar() {
+      return (
+        <svg className="empty-radar" viewBox="0 0 64 64" fill="none">
           <circle cx="32" cy="32" r="30" stroke="#243447" strokeWidth="1.5"/>
           <circle cx="32" cy="32" r="20" stroke="#243447" strokeWidth="1.5"/>
           <circle cx="32" cy="32" r="10" stroke="#243447" strokeWidth="1.5"/>
@@ -1052,27 +802,13 @@ Be direct and analytical. This tool is for professionals making real business de
       );
     }
 
-    // ── BrandRadar (header icon) ──────────────────────────────────────────────
-    function BrandRadar({ className }) {
-      return (
-        <svg className={className} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="14" cy="14" r="13" stroke="#F5A623" strokeWidth="1.5" opacity="0.6"/>
-          <circle cx="14" cy="14" r="8"  stroke="#F5A623" strokeWidth="1"   opacity="0.4"/>
-          <circle cx="14" cy="14" r="3"  stroke="#F5A623" strokeWidth="1"   opacity="0.4"/>
-          <line x1="14" y1="1"  x2="14" y2="27" stroke="#F5A623" strokeWidth="0.8" opacity="0.3"/>
-          <line x1="1"  y1="14" x2="27" y2="14" stroke="#F5A623" strokeWidth="0.8" opacity="0.3"/>
-          <circle cx="14" cy="14" r="1.5" fill="#F5A623"/>
-        </svg>
-      );
-    }
-
     // ── App ───────────────────────────────────────────────────────────────────
     function App() {
       const [messages,    setMessages]    = useState([]);
       const [input,       setInput]       = useState("");
       const [isLoading,   setIsLoading]   = useState(false);
       const [apiKey,      setApiKey]      = useState("");
-      const [apiStatus,   setApiStatus]   = useState("checking"); // checking | online | offline
+      const [apiStatus,   setApiStatus]   = useState("checking");
       const [newAircraft, setNewAircraft] = useState(AIRCRAFT_OPTIONS[0]);
       const [fleet,       setFleet]       = useState([
         { aircraft_name: "Boeing 737-800",   count: 10 },
@@ -1081,78 +817,47 @@ Be direct and analytical. This tool is for professionals making real business de
         { aircraft_name: "Boeing 767-300ER", count:  2 }
       ]);
 
-      // history for Claude API (different from display messages)
       const apiHistoryRef  = useRef([]);
-      const messagesEndRef = useRef(null);
-      // tool call state for current in-flight response
+      const messagesWrapRef = useRef(null);
       const liveToolsRef   = useRef({});
+      const abortRef       = useRef(null);
 
-      // Check API health on mount
       useEffect(() => {
         fetch(`${API_BASE}/competitors/underserved?min_passengers=1&max_carriers=0&max_results=1`)
           .then(r => setApiStatus(r.ok ? "online" : "offline"))
           .catch(() => setApiStatus("offline"));
       }, []);
 
-      // Scroll to bottom whenever messages update
+      // Auto-scroll to bottom
       useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (messagesWrapRef.current) {
+          messagesWrapRef.current.scrollTop = messagesWrapRef.current.scrollHeight;
+        }
       }, [messages]);
-
-      const addMessage = useCallback((msg) => {
-        setMessages(prev => [...prev, { id: Date.now() + Math.random(), ...msg }]);
-      }, []);
-
-      const updateLastAssistantMessage = useCallback((updater) => {
-        setMessages(prev => {
-          const next = [...prev];
-          for (let i = next.length - 1; i >= 0; i--) {
-            if (next[i].type === "assistant" || next[i].type === "thinking") {
-              next[i] = updater(next[i]);
-              return next;
-            }
-          }
-          return next;
-        });
-      }, []);
 
       const sendMessage = useCallback(async (text) => {
         if (!text.trim() || isLoading) return;
-        if (!apiKey) { alert("Please enter your Anthropic API key in the sidebar."); return; }
+        if (!apiKey.trim()) { alert("Please enter your Anthropic API key in the sidebar."); return; }
 
         setInput("");
         setIsLoading(true);
         liveToolsRef.current = {};
 
-        // Add user message to display
-        addMessage({ type: "user", text: text.trim() });
+        const userMsg = { id: Date.now(), type: "user", text: text.trim() };
+        const assistantMsg = { id: Date.now() + 1, type: "assistant", text: "", toolCalls: [] };
 
-        // Add to API history
-        apiHistoryRef.current = [
-          ...apiHistoryRef.current,
-          { role: "user", content: text.trim() }
-        ];
+        setMessages(prev => [...prev, userMsg, assistantMsg]);
 
-        // Add thinking placeholder
-        addMessage({ type: "thinking", text: "Thinking…", toolCalls: [] });
+        apiHistoryRef.current = [...apiHistoryRef.current, { role: "user", content: text.trim() }];
 
-        // Convert thinking to assistant message container
-        // (we'll update it as tools come in)
-        setMessages(prev => {
-          const next = [...prev];
-          for (let i = next.length - 1; i >= 0; i--) {
-            if (next[i].type === "thinking") {
-              next[i] = { ...next[i], type: "assistant", text: "", toolCalls: [] };
-              return next;
-            }
-          }
-          return next;
-        });
+        const controller = new AbortController();
+        abortRef.current = controller;
 
         await runAgent({
           messages: apiHistoryRef.current,
-          apiKey,
+          apiKey: apiKey.trim(),
           fleet,
+          signal: controller.signal,
           onToolCall: ({ id, name, status, result }) => {
             liveToolsRef.current[id] = { id, name, status, result };
             const toolsArray = Object.values(liveToolsRef.current);
@@ -1172,14 +877,12 @@ Be direct and analytical. This tool is for professionals making real business de
             setMessages(prev => {
               const next = [...prev];
               for (let i = next.length - 1; i >= 0; i--) {
-                if (next[i].type === "assistant") {
-                  next[i] = { ...next[i], text };
-                  return next;
-                }
+                if (next[i].type === "assistant") { next[i] = { ...next[i], text }; return next; }
               }
               return next;
             });
             setIsLoading(false);
+            abortRef.current = null;
           },
           onError: (errText) => {
             setMessages(prev => {
@@ -1193,75 +896,57 @@ Be direct and analytical. This tool is for professionals making real business de
               return next;
             });
             setIsLoading(false);
+            abortRef.current = null;
           }
         });
-      }, [apiKey, fleet, isLoading, addMessage]);
+      }, [apiKey, fleet, isLoading]);
+
+      const stopGeneration = () => {
+        abortRef.current?.abort();
+        setIsLoading(false);
+      };
 
       const handleKeyDown = (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage(input);
-        }
+        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(input); }
       };
 
       const addFleetAircraft = () => {
-        if (!fleet.find(f => f.aircraft_name === newAircraft)) {
+        if (!fleet.find(f => f.aircraft_name === newAircraft))
           setFleet(prev => [...prev, { aircraft_name: newAircraft, count: 1 }]);
-        }
-      };
-
-      const updateFleetCount = (name, count) => {
-        setFleet(prev => prev.map(f =>
-          f.aircraft_name === name ? { ...f, count: Math.max(1, parseInt(count) || 1) } : f
-        ));
-      };
-
-      const removeFleetAircraft = (name) => {
-        setFleet(prev => prev.filter(f => f.aircraft_name !== name));
       };
 
       return (
         <>
-          {/* Header */}
           <header className="header">
             <div className="brand">
-              <BrandRadar className="brand-icon" />
+              <BrandRadar />
               <div className="brand-text">
                 <span className="brand-name">Route Intelligence</span>
                 <span className="brand-sub">Airline Strategy Agent</span>
               </div>
             </div>
-            <div className="header-right">
-              <div className="status-pill">
-                <div className={`status-dot ${apiStatus === "online" ? "online" : apiStatus === "offline" ? "offline" : ""}`} />
-                <span>
-                  {apiStatus === "online"   ? "API Connected" :
-                   apiStatus === "offline"  ? "API Offline"   :
-                                             "Checking…"}
-                </span>
-              </div>
+            <div className="status-pill">
+              <div className={`status-dot ${apiStatus === "online" ? "online" : apiStatus === "offline" ? "offline" : ""}`} />
+              <span>{apiStatus === "online" ? "API Connected" : apiStatus === "offline" ? "API Offline" : "Checking…"}</span>
             </div>
           </header>
 
           <div className="main">
-            {/* Chat panel */}
             <div className="chat-panel">
-              {messages.length === 0 ? (
-                <div className="empty">
-                  <RadarSVG className="empty-radar" />
-                  <div className="empty-title">Ask the agent anything</div>
-                  <div className="empty-sub">
-                    Powered by real 2022 BTS data — demand forecasting, competitor analysis, fleet optimization, and network redeployment.
-                  </div>
+              <div className="messages-wrap" ref={messagesWrapRef}>
+                <div className="messages-inner">
+                  {messages.length === 0 ? (
+                    <div className="empty">
+                      <EmptyRadar />
+                      <div className="empty-title">Ask the agent anything</div>
+                      <div className="empty-sub">Powered by real 2022 BTS data — demand forecasting, competitor analysis, fleet optimization, and network redeployment.</div>
+                    </div>
+                  ) : (
+                    messages.map(msg => <Message key={msg.id} msg={msg} />)
+                  )}
                 </div>
-              ) : (
-                <div className="messages">
-                  {messages.map(msg => <Message key={msg.id} msg={msg} />)}
-                  <div ref={messagesEndRef} />
-                </div>
-              )}
+              </div>
 
-              {/* Input */}
               <div className="input-area">
                 <div className="input-row">
                   <textarea
@@ -1273,91 +958,54 @@ Be direct and analytical. This tool is for professionals making real business de
                     disabled={isLoading}
                     rows={1}
                   />
-                  <button
-                    className="send-btn"
-                    onClick={() => sendMessage(input)}
-                    disabled={isLoading || !input.trim()}
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                  </button>
+                  {isLoading ? (
+                    <button className="stop-btn" onClick={stopGeneration} title="Stop">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                        <rect x="4" y="4" width="16" height="16" rx="2"/>
+                      </svg>
+                    </button>
+                  ) : (
+                    <button className="send-btn" onClick={() => sendMessage(input)} disabled={!input.trim()}>
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Config panel */}
             <div className="config-panel">
-              
-              {/* API Key */}
-<div className="config-section">
-  <div className="section-label">Anthropic API Key</div>
-  <input
-    type="password"
-    className="field-input"
-    placeholder="sk-ant-..."
-    value={apiKey}
-    onChange={e => setApiKey(e.target.value)}
-  />
-  <div className="field-note">
-    Enter your Anthropic API key to start. Keys are used only in your browser.
-  </div>
-</div>
+              <div className="config-section">
+                <div className="section-label">Anthropic API Key</div>
+                <input type="password" className="field-input" placeholder="sk-ant-..." value={apiKey} onChange={e => setApiKey(e.target.value)} />
+                <div className="field-note">Used only in your browser — never stored or shared.</div>
+              </div>
 
-              {/* Quick prompts */}
               <div className="config-section">
                 <div className="section-label">Quick Start</div>
                 {QUICK_PROMPTS.map((p, i) => (
-                  <button
-                    key={i}
-                    className="quick-btn"
-                    onClick={() => sendMessage(p)}
-                    disabled={isLoading}
-                  >
-                    {p}
-                  </button>
+                  <button key={i} className="quick-btn" onClick={() => sendMessage(p)} disabled={isLoading}>{p}</button>
                 ))}
               </div>
 
-              {/* Fleet configuration */}
               <div className="config-section">
                 <div className="section-label">Fleet Configuration</div>
-                <div className="field-note" style={{ marginBottom: 10 }}>
-                  Used by the fleet optimizer. The agent reads this automatically when you ask about fleet assignment.
-                </div>
+                <div className="field-note" style={{ marginBottom: 10 }}>Used automatically by the fleet optimizer.</div>
                 {fleet.map(f => (
                   <div key={f.aircraft_name} className="fleet-item">
                     <span className="fleet-item-name">{f.aircraft_name}</span>
-                    <input
-                      type="number"
-                      className="fleet-count-input"
-                      value={f.count}
-                      min={1}
-                      onChange={e => updateFleetCount(f.aircraft_name, e.target.value)}
-                    />
-                    <button
-                      className="fleet-remove-btn"
-                      onClick={() => removeFleetAircraft(f.aircraft_name)}
-                    >
-                      ×
-                    </button>
+                    <input type="number" className="fleet-count-input" value={f.count} min={1}
+                      onChange={e => setFleet(prev => prev.map(x => x.aircraft_name === f.aircraft_name ? { ...x, count: Math.max(1, parseInt(e.target.value) || 1) } : x))} />
+                    <button className="fleet-remove-btn" onClick={() => setFleet(prev => prev.filter(x => x.aircraft_name !== f.aircraft_name))}>×</button>
                   </div>
                 ))}
                 <div className="add-row">
-                  <select
-                    className="add-select"
-                    value={newAircraft}
-                    onChange={e => setNewAircraft(e.target.value)}
-                  >
-                    {AIRCRAFT_OPTIONS.filter(a => !fleet.find(f => f.aircraft_name === a)).map(a => (
-                      <option key={a} value={a}>{a}</option>
-                    ))}
+                  <select className="add-select" value={newAircraft} onChange={e => setNewAircraft(e.target.value)}>
+                    {AIRCRAFT_OPTIONS.filter(a => !fleet.find(f => f.aircraft_name === a)).map(a => <option key={a} value={a}>{a}</option>)}
                   </select>
                   <button className="add-btn" onClick={addFleetAircraft}>Add</button>
                 </div>
               </div>
 
-              {/* Data info */}
               <div className="config-section">
                 <div className="section-label">Data</div>
                 <div className="field-note">
@@ -1371,9 +1019,7 @@ Be direct and analytical. This tool is for professionals making real business de
       );
     }
 
-    // ── Mount ─────────────────────────────────────────────────────────────────
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
 </body>
 </html>
