@@ -398,7 +398,7 @@ CRITICAL RULES — follow these exactly:
 
 3. ROUTE TERMINOLOGY: Use "transcontinental" for 2,000+ mile domestic routes. Use "long domestic" for 1,500-2,000 miles. Reserve "long-haul" for international routes only.
 
-4. NO META-COMMENTARY: Do not narrate your analysis process. Never write phrases like "Now I have a comprehensive picture", "Let me analyze this", "Based on the data I've gathered", or anything describing what you're about to do. Start with the findings directly.
+4. NO META-COMMENTARY: Start with the findings. Never open with a sentence describing what you are about to do. Banned phrases include: "Now I have everything needed", "Now I have a comprehensive picture", "Here is my analysis", "Let me analyze", "Based on the data I've gathered", "I can now provide", "Here is the full strategic recommendation". These add no information — delete them and start with the first real finding.
 
 5. DIRECT ANSWERS: Lead with the most important finding. Keep language clean and specific. Cite actual numbers — passenger counts, load factors, fares — not vague descriptors.
 
@@ -619,6 +619,8 @@ CRITICAL RULES — follow these exactly:
           if (input.quarter)            params.quarter            = input.quarter;
           return getJson(buildUrl("/redeployment/candidates", params));
         }
+        case "get_route_status":
+          return getJson(buildUrl("/route/status", { origin: input.origin, dest: input.dest }));
         default: throw new Error(`Unknown tool: ${toolName}`);
       }
     }
