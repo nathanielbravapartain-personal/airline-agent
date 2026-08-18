@@ -6,21 +6,26 @@
   <title>Route Intelligence — Airline Strategy Agent</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --navy:      #0D1B2A;
-      --surface:   #152232;
-      --surface2:  #1C2E42;
-      --amber:     #F5A623;
-      --amber-dim: #9B6A15;
-      --steel:     #4A7FA5;
-      --teal:      #2DD4BF;
-      --text:      #E8EDF2;
-      --text-dim:  #7A93AA;
-      --border:    #243447;
-      --error:     #EF4444;
-      --success:   #22C55E;
+      --bg:        #F0F4F8;
+      --surface:   #FFFFFF;
+      --surface2:  #E8EDF5;
+      --navy:      #1E3A5F;
+      --navy-dim:  #2D5483;
+      --amber:     #D97706;
+      --amber-bg:  #FEF3C7;
+      --teal:      #0E7490;
+      --teal-bg:   #ECFEFF;
+      --text:      #1E293B;
+      --text-dim:  #64748B;
+      --border:    #CBD5E1;
+      --border-light: #E2E8F0;
+      --error:     #DC2626;
+      --success:   #16A34A;
+      --tool-border: #BAE6FD;
+      --tool-bg:   #F0F9FF;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,8 +36,8 @@
     }
 
     body {
-      font-family: 'Space Grotesk', sans-serif;
-      background: var(--navy);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       color: var(--text);
       display: flex;
       flex-direction: column;
@@ -45,8 +50,7 @@
 
     /* ── Header ─────────────────────────────────────────────────── */
     .header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      background: var(--navy);
       padding: 0 20px;
       height: 52px;
       min-height: 52px;
@@ -60,30 +64,32 @@
     .brand-icon { width: 28px; height: 28px; }
     .brand-text { display: flex; flex-direction: column; }
     .brand-name {
-      font-size: 13px; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text); line-height: 1;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #FFFFFF; line-height: 1;
     }
     .brand-sub {
-      font-size: 10px; color: var(--text-dim);
-      letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px;
+      font-size: 9px; color: rgba(255,255,255,0.55);
+      letter-spacing: 0.12em; text-transform: uppercase; margin-top: 3px;
     }
 
     .status-pill {
       display: flex; align-items: center; gap: 6px;
-      font-size: 11px; color: var(--text-dim);
-      background: var(--navy); border: 1px solid var(--border);
-      border-radius: 20px; padding: 4px 10px;
+      font-size: 11px; color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px; padding: 4px 12px;
+      font-weight: 500;
     }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); }
-    .status-dot.online  { background: var(--success); }
-    .status-dot.offline { background: var(--error); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+    .status-dot.online  { background: #4ADE80; }
+    .status-dot.offline { background: #F87171; }
 
     /* ── Main layout ─────────────────────────────────────────────── */
     .main {
       display: flex;
       flex: 1;
-      min-height: 0; /* critical for flex scroll children */
+      min-height: 0;
       overflow: hidden;
     }
 
@@ -94,12 +100,13 @@
       flex-direction: column;
       min-width: 0;
       overflow: hidden;
+      background: var(--bg);
     }
 
     .messages-wrap {
       flex: 1;
       overflow-y: auto;
-      min-height: 0; /* critical */
+      min-height: 0;
     }
 
     .messages-wrap::-webkit-scrollbar { width: 4px; }
@@ -121,7 +128,7 @@
       text-align: center; padding: 60px 40px;
       min-height: 300px;
     }
-    .empty-radar { width: 64px; height: 64px; margin-bottom: 8px; opacity: 0.35; }
+    .empty-icon { font-size: 48px; margin-bottom: 8px; opacity: 0.6; }
     .empty-title { font-size: 18px; font-weight: 600; color: var(--text); }
     .empty-sub { font-size: 13px; max-width: 300px; line-height: 1.6; }
 
@@ -130,73 +137,77 @@
     .msg.user { flex-direction: row-reverse; }
 
     .msg-avatar {
-      width: 30px; height: 30px; border-radius: 7px;
+      width: 30px; height: 30px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
     }
-    .msg.user .msg-avatar     { background: var(--amber); color: var(--navy); }
-    .msg.assistant .msg-avatar { background: var(--steel); color: var(--text); }
+    .msg.user .msg-avatar     { background: var(--navy); color: #FFFFFF; }
+    .msg.assistant .msg-avatar { background: var(--amber); color: #FFFFFF; }
 
     .msg-body { display: flex; flex-direction: column; gap: 6px; max-width: 88%; }
     .msg.user .msg-body { align-items: flex-end; }
 
     .msg-bubble {
-      background: var(--surface); border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border-light);
       border-radius: 12px; padding: 14px 16px;
       font-size: 14px; line-height: 1.65;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     .msg.user .msg-bubble {
-      background: var(--surface2); border-color: var(--amber-dim);
+      background: var(--navy); color: #FFFFFF;
+      border-color: var(--navy);
     }
 
-    /* Markdown styles inside bubbles */
+    /* Markdown inside bubbles */
     .msg-bubble h2 {
-      font-size: 15px; font-weight: 700; color: var(--amber);
-      margin: 14px 0 8px; padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
+      font-size: 15px; font-weight: 700; color: var(--navy);
+      margin: 16px 0 8px; padding-bottom: 6px;
+      border-bottom: 2px solid var(--border-light);
     }
     .msg-bubble h2:first-child { margin-top: 0; }
+    .msg-bubble h2 .emoji { margin-right: 6px; }
     .msg-bubble h3 {
-      font-size: 13px; font-weight: 600; color: var(--teal);
-      margin: 12px 0 6px; text-transform: uppercase; letter-spacing: 0.06em;
+      font-size: 12px; font-weight: 700; color: var(--teal);
+      margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.08em;
     }
     .msg-bubble h3:first-child { margin-top: 0; }
     .msg-bubble p { margin-bottom: 8px; }
     .msg-bubble p:last-child { margin-bottom: 0; }
-    .msg-bubble strong { color: var(--amber); font-weight: 600; }
-    .msg-bubble em { color: var(--teal); font-style: normal; font-weight: 500; }
+    .msg-bubble strong { color: var(--navy); font-weight: 700; }
+    .msg-bubble em { color: var(--teal); font-style: normal; font-weight: 600; }
     .msg-bubble ul, .msg-bubble ol { margin: 6px 0 8px 18px; }
-    .msg-bubble li { margin-bottom: 4px; line-height: 1.5; }
+    .msg-bubble li { margin-bottom: 4px; line-height: 1.55; }
     .msg-bubble hr {
-      border: none; border-top: 1px solid var(--border); margin: 12px 0;
+      border: none; border-top: 1px solid var(--border-light); margin: 14px 0;
     }
     .msg-bubble code {
       font-family: 'JetBrains Mono', monospace; font-size: 12px;
-      background: var(--navy); padding: 2px 6px; border-radius: 4px; color: var(--teal);
+      background: var(--surface2); padding: 2px 6px; border-radius: 4px;
+      color: var(--teal); border: 1px solid var(--border-light);
     }
 
-    /* Table styles */
+    /* Table */
     .msg-bubble table {
       width: 100%; border-collapse: collapse;
-      margin: 10px 0; font-size: 12.5px;
+      margin: 10px 0; font-size: 13px;
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
     }
     .msg-bubble th {
-      background: var(--navy); color: var(--amber);
-      padding: 7px 10px; text-align: left; font-weight: 600;
-      border: 1px solid var(--border); font-size: 11px;
-      text-transform: uppercase; letter-spacing: 0.05em;
+      background: var(--navy); color: #FFFFFF;
+      padding: 8px 12px; text-align: left; font-weight: 600;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
     }
     .msg-bubble td {
-      padding: 7px 10px; border: 1px solid var(--border);
+      padding: 8px 12px; border-top: 1px solid var(--border-light);
       color: var(--text); vertical-align: top;
     }
-    .msg-bubble tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+    .msg-bubble tr:nth-child(even) td { background: var(--bg); }
 
     /* ── Tool calls ──────────────────────────────────────────────── */
     .tool-call {
-      border: 1px solid rgba(45,212,191,0.25);
+      border: 1px solid var(--tool-border);
       border-radius: 8px; overflow: hidden;
-      background: rgba(45,212,191,0.03);
+      background: var(--tool-bg);
     }
     .tool-header {
       display: flex; align-items: center; gap: 8px;
@@ -208,34 +219,36 @@
       font-size: 11px; color: var(--teal); font-weight: 500;
     }
     .tool-badge {
-      font-size: 10px; padding: 2px 7px; border-radius: 10px;
-      margin-left: auto; font-weight: 600; letter-spacing: 0.04em;
+      font-size: 10px; padding: 2px 8px; border-radius: 10px;
+      margin-left: auto; font-weight: 700; letter-spacing: 0.04em;
     }
-    .tool-badge.running { background: rgba(245,166,35,0.12); color: var(--amber); }
-    .tool-badge.done    { background: rgba(34,197,94,0.1);   color: var(--success); }
-    .tool-badge.error   { background: rgba(239,68,68,0.1);   color: var(--error); }
+    .tool-badge.running { background: var(--amber-bg); color: var(--amber); }
+    .tool-badge.done    { background: #DCFCE7; color: var(--success); }
+    .tool-badge.error   { background: #FEE2E2; color: var(--error); }
     .tool-chevron { font-size: 10px; color: var(--text-dim); transition: transform 0.2s; }
     .tool-chevron.open { transform: rotate(180deg); }
     .tool-body {
-      border-top: 1px solid rgba(45,212,191,0.12);
+      border-top: 1px solid var(--tool-border);
       padding: 10px 12px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 10.5px; color: var(--text-dim);
       max-height: 200px; overflow-y: auto;
       white-space: pre-wrap; word-break: break-all; line-height: 1.5;
+      background: var(--surface);
     }
 
     /* ── Thinking ────────────────────────────────────────────────── */
     .thinking {
       display: flex; align-items: center; gap: 10px;
       padding: 12px 14px;
-      background: var(--surface); border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border-light);
       border-radius: 12px; font-size: 13px; color: var(--text-dim);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     .dots { display: flex; gap: 4px; }
     .dot {
       width: 5px; height: 5px; border-radius: 50%;
-      background: var(--steel); animation: throb 1.2s ease-in-out infinite;
+      background: var(--teal); animation: throb 1.2s ease-in-out infinite;
     }
     .dot:nth-child(2) { animation-delay: 0.15s; }
     .dot:nth-child(3) { animation-delay: 0.30s; }
@@ -249,39 +262,40 @@
       padding: 12px 20px 16px;
       border-top: 1px solid var(--border);
       flex-shrink: 0;
+      background: var(--surface);
     }
     .input-row { display: flex; gap: 8px; align-items: flex-end; }
     .chat-input {
       flex: 1;
-      background: var(--surface); border: 1px solid var(--border);
+      background: var(--bg); border: 1.5px solid var(--border);
       border-radius: 10px; padding: 11px 14px;
-      color: var(--text); font-family: 'Space Grotesk', sans-serif;
+      color: var(--text); font-family: 'Inter', sans-serif;
       font-size: 14px; resize: none; min-height: 44px; max-height: 120px;
       outline: none; transition: border-color 0.15s; line-height: 1.4;
     }
-    .chat-input:focus { border-color: var(--amber); }
+    .chat-input:focus { border-color: var(--navy); }
     .chat-input::placeholder { color: var(--text-dim); }
     .chat-input:disabled { opacity: 0.6; }
 
     .send-btn {
-      background: var(--amber); border: none; border-radius: 10px;
+      background: var(--navy); border: none; border-radius: 10px;
       width: 44px; height: 44px; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; color: var(--navy);
+      justify-content: center; cursor: pointer; color: #FFFFFF;
       flex-shrink: 0; transition: background 0.15s, transform 0.1s;
     }
-    .send-btn:hover:not(:disabled) { background: #f7b94d; }
+    .send-btn:hover:not(:disabled) { background: var(--navy-dim); }
     .send-btn:active:not(:disabled) { transform: scale(0.94); }
     .send-btn:disabled { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
     .send-btn svg { width: 18px; height: 18px; }
 
     .stop-btn {
-      background: transparent; border: 1px solid var(--error);
+      background: #FEE2E2; border: 1.5px solid #FECACA;
       border-radius: 10px; width: 44px; height: 44px;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; color: var(--error); flex-shrink: 0;
       transition: background 0.15s;
     }
-    .stop-btn:hover { background: rgba(239,68,68,0.1); }
+    .stop-btn:hover { background: #FECACA; }
 
     /* ── Config panel ────────────────────────────────────────────── */
     .config-panel {
@@ -295,37 +309,37 @@
     .config-panel::-webkit-scrollbar-thumb { background: var(--border); }
 
     .config-section {
-      padding: 16px; border-bottom: 1px solid var(--border);
+      padding: 16px; border-bottom: 1px solid var(--border-light);
     }
     .config-section:last-child { border-bottom: none; }
     .section-label {
-      font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
     }
 
     .field-input {
-      width: 100%; background: var(--navy); border: 1px solid var(--border);
+      width: 100%; background: var(--bg); border: 1.5px solid var(--border);
       border-radius: 7px; padding: 8px 10px; color: var(--text);
-      font-family: 'Space Grotesk', sans-serif; font-size: 13px; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 13px; outline: none;
       transition: border-color 0.15s;
     }
-    .field-input:focus { border-color: var(--amber); }
+    .field-input:focus { border-color: var(--navy); }
     .field-input::placeholder { color: var(--text-dim); }
     .field-note { font-size: 10.5px; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
 
     /* Fleet items */
     .fleet-item {
       display: flex; align-items: center; gap: 7px;
-      background: var(--navy); border: 1px solid var(--border);
+      background: var(--bg); border: 1px solid var(--border-light);
       border-radius: 7px; padding: 7px 9px; margin-bottom: 6px;
     }
-    .fleet-item-name { flex: 1; font-size: 11.5px; color: var(--text); line-height: 1.3; }
+    .fleet-item-name { flex: 1; font-size: 11.5px; color: var(--text); line-height: 1.3; font-weight: 500; }
     .fleet-count-input {
       width: 36px; background: var(--surface2);
       border: 1px solid var(--border); border-radius: 5px;
-      padding: 3px 5px; color: var(--amber);
+      padding: 3px 5px; color: var(--navy);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px; text-align: center; outline: none;
+      font-size: 12px; text-align: center; outline: none; font-weight: 600;
     }
     .fleet-remove-btn {
       background: none; border: none; color: var(--text-dim);
@@ -335,29 +349,31 @@
 
     .add-row { display: flex; gap: 6px; margin-top: 8px; }
     .add-select {
-      flex: 1; background: var(--navy); border: 1px solid var(--border);
+      flex: 1; background: var(--bg); border: 1.5px solid var(--border);
       border-radius: 7px; padding: 7px 8px; color: var(--text);
       font-size: 11px; outline: none; min-width: 0;
     }
     .add-btn {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 7px; padding: 7px 10px; color: var(--amber);
-      font-size: 12px; cursor: pointer;
-      font-family: 'Space Grotesk', sans-serif; white-space: nowrap;
+      background: var(--navy); border: none;
+      border-radius: 7px; padding: 7px 12px; color: #FFFFFF;
+      font-size: 12px; cursor: pointer; font-weight: 600;
+      font-family: 'Inter', sans-serif; white-space: nowrap;
     }
-    .add-btn:hover { border-color: var(--amber); }
+    .add-btn:hover { background: var(--navy-dim); }
 
     /* Quick prompts */
     .quick-btn {
       width: 100%; text-align: left;
-      background: var(--navy); border: 1px solid var(--border);
+      background: var(--bg); border: 1.5px solid var(--border-light);
       border-radius: 8px; padding: 9px 11px;
       font-size: 11.5px; color: var(--text-dim);
-      cursor: pointer; font-family: 'Space Grotesk', sans-serif;
-      line-height: 1.4; margin-bottom: 6px;
-      transition: border-color 0.15s, color 0.15s;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      line-height: 1.4; margin-bottom: 6px; font-weight: 500;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
     }
-    .quick-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--text); }
+    .quick-btn:hover:not(:disabled) {
+      border-color: var(--navy); color: var(--navy); background: var(--surface);
+    }
     .quick-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .quick-btn:last-child { margin-bottom: 0; }
   </style>
@@ -372,73 +388,74 @@
 
     const API_BASE = "https://airline-agent.onrender.com";
 
-    const SYSTEM_PROMPT = `You are an airline route intelligence agent backed by real BTS (Bureau of Transportation Statistics) data from 2022. You help airline strategists make data-driven decisions.
+    const SYSTEM_PROMPT = `You are an airline route intelligence agent with access to real 2022 BTS (Bureau of Transportation Statistics) data. Your job is to give direct, specific, data-backed answers.
 
-Your analytical capabilities:
-- Demand forecasting: predict quarterly passenger volumes for any US domestic route
-- Route scoring: predict expected load factor (seat utilization) for proposed routes
-- Competitor analysis: market share, HHI concentration, carrier profiles, and underserved markets
-- Fleet assignment: optimize aircraft type assignment across candidate routes using integer programming
-- Network redeployment: identify underperforming routes where capacity could be redeployed
+CRITICAL RULES — follow these exactly:
 
-When answering questions:
-1. Always call the relevant tools first — never guess at numbers when you have real data available
-2. Call multiple tools when needed to build a complete picture
-3. Be specific: cite actual passenger counts, load factors, fares, carrier names, and aircraft types
-4. Format your responses clearly using headers (##), bullet points, and tables where appropriate
-5. For compound recommendations follow: opportunity → demand evidence → competitor landscape → aircraft recommendation → redeployment source
-6. Flag model limitations honestly: data is from 2022, route scoring RSQ ~0.38 (directional), demand model RSQ ~0.73
+1. DATA OVER KNOWLEDGE: Only state facts that come from tool results. Never use your training knowledge to fill gaps — if a tool didn't return it, don't say it.
 
-Keep responses well-structured and scannable. Use ## for major sections, ### for subsections, tables for comparative data, and bullet points for lists.`;
+2. NO HUB CLASSIFICATION: Never call an airport a hub for a specific carrier unless the tool data shows dominant market share (60%+) at that airport. Do not rely on prior knowledge about which airports are hubs.
+
+3. ROUTE TERMINOLOGY: Use "transcontinental" for 2,000+ mile domestic routes. Use "long domestic" for 1,500-2,000 miles. Reserve "long-haul" for international routes only.
+
+4. NO META-COMMENTARY: Do not narrate your analysis process. Never write phrases like "Now I have a comprehensive picture", "Let me analyze this", "Based on the data I've gathered", or anything describing what you're about to do. Start with the findings directly.
+
+5. DIRECT ANSWERS: Lead with the most important finding. Keep language clean and specific. Cite actual numbers — passenger counts, load factors, fares — not vague descriptors.
+
+6. STRUCTURED OUTPUT: Use ## for major sections, ### for sub-sections, tables for comparative data, and bullet points for lists. Tables should have two or three columns maximum.
+
+7. HONEST CAVEATS: The data is from 2022. Route scoring has RSQ ~0.38 — use it as directional signal, not precise prediction. State this when relevant, once, concisely.
+
+8. TOOL-FIRST: Call tools before writing analysis. For compound questions, call all relevant tools first, then synthesize.`;
 
     const TOOLS = [
       {
         name: "predict_demand",
-        description: "Predict quarterly and annual passenger demand for a proposed or existing US domestic route using the demand forecasting model (RSQ 0.73).",
+        description: "Predict quarterly and annual passenger demand for a US domestic route using the demand forecasting model (RSQ 0.73).",
         input_schema: {
           type: "object",
           properties: {
-            origin:       { type: "string",  description: "Origin airport IATA code e.g. ORD" },
-            dest:         { type: "string",  description: "Destination airport IATA code e.g. LAX" },
+            origin:       { type: "string",  description: "Origin airport IATA code" },
+            dest:         { type: "string",  description: "Destination airport IATA code" },
             avg_fare:     { type: "number",  description: "Expected average market fare in USD" },
-            avg_distance: { type: "number",  description: "Route distance in statute miles" },
+            avg_distance: { type: "number",  description: "Route distance in miles" },
             num_carriers: { type: "number",  description: "Current nonstop carriers (0 for new routes)" },
-            quarter:      { type: "number",  description: "Quarter: 1=Q1, 2=Q2, 3=Q3, 4=Q4" }
+            quarter:      { type: "number",  description: "Quarter: 1-4" }
           },
           required: ["origin", "dest", "avg_fare", "avg_distance"]
         }
       },
       {
         name: "score_route",
-        description: "Predict expected load factor (0-1) for a proposed route using the route scoring model (RSQ 0.38 — directional signal).",
+        description: "Predict expected load factor (0-1) for a route using the route scoring model (RSQ 0.38 — directional).",
         input_schema: {
           type: "object",
           properties: {
-            avg_distance:           { type: "number", description: "Route distance in miles" },
-            num_operators:          { type: "number", description: "Current nonstop operators (0 = new route)" },
-            total_departures:       { type: "number", description: "Expected quarterly departures: 91=daily, 182=twice daily" },
+            avg_distance:           { type: "number" },
+            num_operators:          { type: "number", description: "Current nonstop operators (0 = new)" },
+            total_departures:       { type: "number", description: "Quarterly departures: 91=daily, 182=twice daily" },
             primary_aircraft_class: { type: "string", enum: ["narrowbody","widebody","regional_jet","regional_turboprop"] },
-            quarter:                { type: "number", description: "Quarter (1-4)" }
+            quarter:                { type: "number" }
           },
           required: ["avg_distance"]
         }
       },
       {
         name: "get_route_competitors",
-        description: "Get all carriers operating a route nonstop with market share, load factor, and aircraft type.",
+        description: "Get all carriers on a route with market share, load factor, and aircraft type.",
         input_schema: {
           type: "object",
           properties: {
-            origin: { type: "string", description: "Origin IATA code" },
-            dest:   { type: "string", description: "Destination IATA code" },
-            year:   { type: "number", description: "Year (default 2022)" }
+            origin: { type: "string" },
+            dest:   { type: "string" },
+            year:   { type: "number" }
           },
           required: ["origin", "dest"]
         }
       },
       {
         name: "get_market_concentration",
-        description: "Get HHI market concentration for a route. HHI < 1500 = competitive, 1500-2500 = moderate, > 2500 = concentrated.",
+        description: "Get HHI concentration for a route. HHI <1500=competitive, 1500-2500=moderate, >2500=concentrated, 10000=monopoly.",
         input_schema: {
           type: "object",
           properties: {
@@ -451,31 +468,31 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
       },
       {
         name: "get_carrier_profile",
-        description: "Get network summary and top routes for a carrier.",
+        description: "Get network stats and top routes for a carrier.",
         input_schema: {
           type: "object",
           properties: {
-            carrier_code: { type: "string", description: "IATA code: UA=United, DL=Delta, AA=American, WN=Southwest, B6=JetBlue, NK=Spirit, AS=Alaska, HA=Hawaiian, F9=Frontier, G4=Allegiant" }
+            carrier_code: { type: "string", description: "IATA code: UA, DL, AA, WN, B6, NK, AS, HA, F9, G4, OO" }
           },
           required: ["carrier_code"]
         }
       },
       {
         name: "get_underserved_markets",
-        description: "Find US domestic routes with high demand but zero or few nonstop operators — new route opportunities.",
+        description: "Find routes with high DB1B demand but zero or few nonstop operators — new route opportunities.",
         input_schema: {
           type: "object",
           properties: {
             min_passengers: { type: "number", description: "Min quarterly DB1B passengers (default 500)" },
-            max_carriers:   { type: "number", description: "Max current nonstop carriers: 0=completely unserved" },
-            max_results:    { type: "number", description: "Results to return (default 20)" }
+            max_carriers:   { type: "number", description: "Max current nonstop carriers (0=completely unserved)" },
+            max_results:    { type: "number" }
           },
           required: []
         }
       },
       {
         name: "get_carrier_overlap",
-        description: "Find routes where two carriers compete head to head.",
+        description: "Find routes where two carriers compete directly.",
         input_schema: {
           type: "object",
           properties: {
@@ -487,37 +504,37 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
       },
       {
         name: "optimize_fleet",
-        description: "Integer programming fleet assignment: assign aircraft types to candidate routes maximizing expected passengers within range and fleet constraints.",
+        description: "Integer programming fleet optimizer: assigns aircraft to candidate routes maximizing expected passengers within range and fleet constraints.",
         input_schema: {
           type: "object",
           properties: {
             fleet: {
               type: "array",
-              description: "Aircraft fleet (uses sidebar config if omitted)",
+              description: "Fleet to optimize (uses sidebar config if omitted)",
               items: {
                 type: "object",
                 properties: {
                   aircraft_name: { type: "string" },
-                  count:         { type: "number" }
+                  count: { type: "number" }
                 },
                 required: ["aircraft_name", "count"]
               }
             },
-            departures_per_quarter: { type: "number", description: "Quarterly departures: 91=daily, 182=twice daily" },
-            quarter:                { type: "number" },
-            min_passengers:         { type: "number" }
+            departures_per_quarter: { type: "number", description: "91=daily, 182=twice daily" },
+            quarter: { type: "number" },
+            min_passengers: { type: "number" }
           },
           required: []
         }
       },
       {
         name: "get_redeployment_candidates",
-        description: "Find routes where actual load factor is significantly below predicted — excess capacity to redeploy.",
+        description: "Find routes where actual load factor is significantly below predicted — excess capacity available for redeployment.",
         input_schema: {
           type: "object",
           properties: {
-            carrier_code:       { type: "string",  description: "Filter to specific carrier (omit for all)" },
-            lf_gap_threshold:   { type: "number",  description: "Min LF gap to flag route (default 0.10)" },
+            carrier_code:       { type: "string",  description: "Filter to carrier IATA code (omit for all)" },
+            lf_gap_threshold:   { type: "number",  description: "Min gap between predicted and actual LF (default 0.10)" },
             min_seats_deployed: { type: "number",  description: "Min quarterly seats (default 10000)" },
             quarter:            { type: "number" }
           },
@@ -567,13 +584,13 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
         return res.json();
       };
       switch (toolName) {
-        case "predict_demand":          return getJson(buildUrl("/demand/predict", input));
-        case "score_route":             return getJson(buildUrl("/route/score", input));
-        case "get_route_competitors":   return getJson(buildUrl("/competitors/route", input));
-        case "get_market_concentration":return getJson(buildUrl("/competitors/concentration", input));
-        case "get_carrier_profile":     return getJson(buildUrl("/competitors/carrier", { carrier_code: input.carrier_code }));
-        case "get_underserved_markets": return getJson(buildUrl("/competitors/underserved", input));
-        case "get_carrier_overlap":     return getJson(buildUrl("/competitors/overlap", { carrier_a: input.carrier_a, carrier_b: input.carrier_b }));
+        case "predict_demand":           return getJson(buildUrl("/demand/predict", input));
+        case "score_route":              return getJson(buildUrl("/route/score", input));
+        case "get_route_competitors":    return getJson(buildUrl("/competitors/route", input));
+        case "get_market_concentration": return getJson(buildUrl("/competitors/concentration", input));
+        case "get_carrier_profile":      return getJson(buildUrl("/competitors/carrier", { carrier_code: input.carrier_code }));
+        case "get_underserved_markets":  return getJson(buildUrl("/competitors/underserved", input));
+        case "get_carrier_overlap":      return getJson(buildUrl("/competitors/overlap", { carrier_a: input.carrier_a, carrier_b: input.carrier_b }));
         case "optimize_fleet": {
           const body = { fleet: input.fleet?.length ? input.fleet : fleet, departures_per_quarter: input.departures_per_quarter || 91, quarter: input.quarter || 2, min_passengers: input.min_passengers || 500 };
           const res = await fetch(`${API_BASE}/fleet/optimize`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -651,8 +668,7 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
       return text
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/`(.+?)`/g,       "<code>$1</code>")
-        .replace(/\*(.+?)\*/g,     "<em>$1</em>")
-        .replace(/~~(.+?)~~/g,     "<del>$1</del>");
+        .replace(/\*(.+?)\*/g,     "<em>$1</em>");
     }
 
     function parseMarkdown(text) {
@@ -664,7 +680,7 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
         const line = lines[i];
         if (line.startsWith("### ")) { blocks.push({ type: "h3", content: line.slice(4) }); i++; continue; }
         if (line.startsWith("## "))  { blocks.push({ type: "h2", content: line.slice(3) }); i++; continue; }
-        if (line.startsWith("# "))   { blocks.push({ type: "h1", content: line.slice(2) }); i++; continue; }
+        if (line.startsWith("# "))   { blocks.push({ type: "h2", content: line.slice(2) }); i++; continue; }
         if (/^[-*_]{3,}$/.test(line.trim())) { blocks.push({ type: "hr" }); i++; continue; }
         if (line.trim().startsWith("|")) {
           const tableLines = [];
@@ -708,7 +724,6 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
     function renderMarkdown(text) {
       return parseMarkdown(text).map((block, i) => {
         switch (block.type) {
-          case "h1": return <h2 key={i} dangerouslySetInnerHTML={{ __html: formatInline(block.content) }} />;
           case "h2": return <h2 key={i} dangerouslySetInnerHTML={{ __html: formatInline(block.content) }} />;
           case "h3": return <h3 key={i} dangerouslySetInnerHTML={{ __html: formatInline(block.content) }} />;
           case "hr": return <hr key={i} />;
@@ -721,14 +736,14 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
       });
     }
 
-    // ── ToolCallBlock ─────────────────────────────────────────────────────────
+    // ── Components ────────────────────────────────────────────────────────────
     function ToolCallBlock({ name, status, result }) {
       const [open, setOpen] = useState(false);
       const label = { running: "CALLING", done: "DONE", error: "ERROR" }[status] || status;
       return (
         <div className="tool-call">
           <div className="tool-header" onClick={() => result && setOpen(o => !o)}>
-            <span className="tool-icon">⬡</span>
+            <span className="tool-icon">◈</span>
             <span className="tool-name">{name}</span>
             <span className={`tool-badge ${status}`}>{label}</span>
             {result && <span className={`tool-chevron ${open ? "open" : ""}`}>▾</span>}
@@ -738,7 +753,6 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
       );
     }
 
-    // ── Message ───────────────────────────────────────────────────────────────
     function Message({ msg }) {
       if (msg.type === "user") return (
         <div className="msg user">
@@ -746,21 +760,16 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
           <div className="msg-body"><div className="msg-bubble">{msg.text}</div></div>
         </div>
       );
-      if (msg.type === "thinking") return (
-        <div className="msg assistant">
-          <div className="msg-avatar">AI</div>
-          <div className="msg-body">
-            <div className="thinking">
-              <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
-              <span>{msg.text || "Analyzing…"}</span>
-            </div>
-          </div>
-        </div>
-      );
       if (msg.type === "assistant") return (
         <div className="msg assistant">
           <div className="msg-avatar">AI</div>
           <div className="msg-body">
+            {!msg.text && msg.toolCalls?.length === 0 && (
+              <div className="thinking">
+                <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
+                <span>Analyzing…</span>
+              </div>
+            )}
             {msg.toolCalls?.length > 0 && (
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {msg.toolCalls.map(tc => <ToolCallBlock key={tc.id} name={tc.name} status={tc.status} result={tc.result} />)}
@@ -773,36 +782,6 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
       return null;
     }
 
-    // ── SVG icons ─────────────────────────────────────────────────────────────
-    function BrandRadar() {
-      return (
-        <svg className="brand-icon" viewBox="0 0 28 28" fill="none">
-          <circle cx="14" cy="14" r="13" stroke="#F5A623" strokeWidth="1.5" opacity="0.6"/>
-          <circle cx="14" cy="14" r="8"  stroke="#F5A623" strokeWidth="1"   opacity="0.4"/>
-          <circle cx="14" cy="14" r="3"  stroke="#F5A623" strokeWidth="1"   opacity="0.4"/>
-          <line x1="14" y1="1"  x2="14" y2="27" stroke="#F5A623" strokeWidth="0.8" opacity="0.3"/>
-          <line x1="1"  y1="14" x2="27" y2="14" stroke="#F5A623" strokeWidth="0.8" opacity="0.3"/>
-          <circle cx="14" cy="14" r="1.5" fill="#F5A623"/>
-        </svg>
-      );
-    }
-
-    function EmptyRadar() {
-      return (
-        <svg className="empty-radar" viewBox="0 0 64 64" fill="none">
-          <circle cx="32" cy="32" r="30" stroke="#243447" strokeWidth="1.5"/>
-          <circle cx="32" cy="32" r="20" stroke="#243447" strokeWidth="1.5"/>
-          <circle cx="32" cy="32" r="10" stroke="#243447" strokeWidth="1.5"/>
-          <line x1="32" y1="2"  x2="32" y2="62" stroke="#243447" strokeWidth="1"/>
-          <line x1="2"  y1="32" x2="62" y2="32" stroke="#243447" strokeWidth="1"/>
-          <circle cx="32" cy="32" r="2" fill="#2DD4BF"/>
-          <circle cx="44" cy="18" r="2" fill="#F5A623" opacity="0.7"/>
-          <circle cx="20" cy="42" r="1.5" fill="#4A7FA5" opacity="0.7"/>
-        </svg>
-      );
-    }
-
-    // ── App ───────────────────────────────────────────────────────────────────
     function App() {
       const [messages,    setMessages]    = useState([]);
       const [input,       setInput]       = useState("");
@@ -817,10 +796,10 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
         { aircraft_name: "Boeing 767-300ER", count:  2 }
       ]);
 
-      const apiHistoryRef  = useRef([]);
+      const apiHistoryRef   = useRef([]);
       const messagesWrapRef = useRef(null);
-      const liveToolsRef   = useRef({});
-      const abortRef       = useRef(null);
+      const liveToolsRef    = useRef({});
+      const abortRef        = useRef(null);
 
       useEffect(() => {
         fetch(`${API_BASE}/competitors/underserved?min_passengers=1&max_carriers=0&max_results=1`)
@@ -828,7 +807,6 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
           .catch(() => setApiStatus("offline"));
       }, []);
 
-      // Auto-scroll to bottom
       useEffect(() => {
         if (messagesWrapRef.current) {
           messagesWrapRef.current.scrollTop = messagesWrapRef.current.scrollHeight;
@@ -843,9 +821,8 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
         setIsLoading(true);
         liveToolsRef.current = {};
 
-        const userMsg = { id: Date.now(), type: "user", text: text.trim() };
+        const userMsg      = { id: Date.now(),     type: "user",      text: text.trim() };
         const assistantMsg = { id: Date.now() + 1, type: "assistant", text: "", toolCalls: [] };
-
         setMessages(prev => [...prev, userMsg, assistantMsg]);
 
         apiHistoryRef.current = [...apiHistoryRef.current, { role: "user", content: text.trim() }];
@@ -853,73 +830,51 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
         const controller = new AbortController();
         abortRef.current = controller;
 
+        const updateLastAssistant = (updater) => {
+          setMessages(prev => {
+            const next = [...prev];
+            for (let i = next.length - 1; i >= 0; i--) {
+              if (next[i].type === "assistant") { next[i] = updater(next[i]); return next; }
+            }
+            return next;
+          });
+        };
+
         await runAgent({
-          messages: apiHistoryRef.current,
-          apiKey: apiKey.trim(),
-          fleet,
-          signal: controller.signal,
+          messages: apiHistoryRef.current, apiKey: apiKey.trim(), fleet, signal: controller.signal,
           onToolCall: ({ id, name, status, result }) => {
             liveToolsRef.current[id] = { id, name, status, result };
             const toolsArray = Object.values(liveToolsRef.current);
-            setMessages(prev => {
-              const next = [...prev];
-              for (let i = next.length - 1; i >= 0; i--) {
-                if (next[i].type === "assistant") {
-                  next[i] = { ...next[i], toolCalls: toolsArray };
-                  return next;
-                }
-              }
-              return next;
-            });
+            updateLastAssistant(msg => ({ ...msg, toolCalls: toolsArray }));
           },
           onDone: (text, finalHistory) => {
             apiHistoryRef.current = finalHistory;
-            setMessages(prev => {
-              const next = [...prev];
-              for (let i = next.length - 1; i >= 0; i--) {
-                if (next[i].type === "assistant") { next[i] = { ...next[i], text }; return next; }
-              }
-              return next;
-            });
-            setIsLoading(false);
-            abortRef.current = null;
+            updateLastAssistant(msg => ({ ...msg, text }));
+            setIsLoading(false); abortRef.current = null;
           },
           onError: (errText) => {
-            setMessages(prev => {
-              const next = [...prev];
-              for (let i = next.length - 1; i >= 0; i--) {
-                if (next[i].type === "assistant" || next[i].type === "thinking") {
-                  next[i] = { ...next[i], type: "assistant", text: `⚠ ${errText}` };
-                  return next;
-                }
-              }
-              return next;
-            });
-            setIsLoading(false);
-            abortRef.current = null;
+            updateLastAssistant(msg => ({ ...msg, text: `⚠ ${errText}` }));
+            setIsLoading(false); abortRef.current = null;
           }
         });
       }, [apiKey, fleet, isLoading]);
 
-      const stopGeneration = () => {
-        abortRef.current?.abort();
-        setIsLoading(false);
-      };
-
       const handleKeyDown = (e) => {
         if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(input); }
-      };
-
-      const addFleetAircraft = () => {
-        if (!fleet.find(f => f.aircraft_name === newAircraft))
-          setFleet(prev => [...prev, { aircraft_name: newAircraft, count: 1 }]);
       };
 
       return (
         <>
           <header className="header">
             <div className="brand">
-              <BrandRadar />
+              <svg className="brand-icon" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="14" r="13" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5"/>
+                <circle cx="14" cy="14" r="8"  stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
+                <circle cx="14" cy="14" r="3"  stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
+                <line x1="14" y1="1" x2="14" y2="27" stroke="rgba(255,255,255,0.2)" strokeWidth="0.8"/>
+                <line x1="1" y1="14" x2="27" y2="14" stroke="rgba(255,255,255,0.2)" strokeWidth="0.8"/>
+                <circle cx="14" cy="14" r="1.5" fill="#F5A623"/>
+              </svg>
               <div className="brand-text">
                 <span className="brand-name">Route Intelligence</span>
                 <span className="brand-sub">Airline Strategy Agent</span>
@@ -937,9 +892,9 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
                 <div className="messages-inner">
                   {messages.length === 0 ? (
                     <div className="empty">
-                      <EmptyRadar />
-                      <div className="empty-title">Ask the agent anything</div>
-                      <div className="empty-sub">Powered by real 2022 BTS data — demand forecasting, competitor analysis, fleet optimization, and network redeployment.</div>
+                      <div className="empty-icon">✈</div>
+                      <div className="empty-title">Airline Route Intelligence</div>
+                      <div className="empty-sub">Ask about route opportunities, fleet assignments, competitor analysis, and network redeployment — backed by real 2022 BTS data.</div>
                     </div>
                   ) : (
                     messages.map(msg => <Message key={msg.id} msg={msg} />)
@@ -951,7 +906,7 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
                 <div className="input-row">
                   <textarea
                     className="chat-input"
-                    placeholder="Ask about route opportunities, fleet assignment, competitor analysis…"
+                    placeholder="Ask about routes, fleet assignment, competitors…"
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -959,10 +914,8 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
                     rows={1}
                   />
                   {isLoading ? (
-                    <button className="stop-btn" onClick={stopGeneration} title="Stop">
-                      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-                        <rect x="4" y="4" width="16" height="16" rx="2"/>
-                      </svg>
+                    <button className="stop-btn" onClick={() => { abortRef.current?.abort(); setIsLoading(false); }}>
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
                     </button>
                   ) : (
                     <button className="send-btn" onClick={() => sendMessage(input)} disabled={!input.trim()}>
@@ -977,7 +930,7 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
               <div className="config-section">
                 <div className="section-label">Anthropic API Key</div>
                 <input type="password" className="field-input" placeholder="sk-ant-..." value={apiKey} onChange={e => setApiKey(e.target.value)} />
-                <div className="field-note">Used only in your browser — never stored or shared.</div>
+                <div className="field-note">Used only in your browser — never stored.</div>
               </div>
 
               <div className="config-section">
@@ -1002,7 +955,7 @@ Keep responses well-structured and scannable. Use ## for major sections, ### for
                   <select className="add-select" value={newAircraft} onChange={e => setNewAircraft(e.target.value)}>
                     {AIRCRAFT_OPTIONS.filter(a => !fleet.find(f => f.aircraft_name === a)).map(a => <option key={a} value={a}>{a}</option>)}
                   </select>
-                  <button className="add-btn" onClick={addFleetAircraft}>Add</button>
+                  <button className="add-btn" onClick={() => { if (!fleet.find(f => f.aircraft_name === newAircraft)) setFleet(prev => [...prev, { aircraft_name: newAircraft, count: 1 }]); }}>Add</button>
                 </div>
               </div>
 
