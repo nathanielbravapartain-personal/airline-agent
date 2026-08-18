@@ -1289,6 +1289,20 @@ Be direct and analytical. This tool is for professionals making real business de
             {/* Config panel */}
             <div className="config-panel">
               
+              {/* API Key */}
+<div className="config-section">
+  <div className="section-label">Anthropic API Key</div>
+  <input
+    type="password"
+    className="field-input"
+    placeholder="sk-ant-..."
+    value={apiKey}
+    onChange={e => setApiKey(e.target.value)}
+  />
+  <div className="field-note">
+    Enter your Anthropic API key to start. Keys are used only in your browser.
+  </div>
+</div>
 
               {/* Quick prompts */}
               <div className="config-section">
