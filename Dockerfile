@@ -9,10 +9,13 @@ RUN apt-get update && apt-get install -y \
 RUN R -e "install.packages('plumber',         repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('duckdb',          repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('tidymodels',      repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages('ranger',          repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages('xgboost',         repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('stacks',          repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('ompr',            repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('ompr.roi',        repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('ROI.plugin.glpk', repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages('glue',            repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('here',            repos='https://cran.rstudio.com/')"
 
 WORKDIR /app
