@@ -62,6 +62,11 @@ Limited by single year of data and absence of pricing features
 
 - **Deployment**: Render + Vercel
 
+# Performance
 
+From the 2022 data the agent predicted a DEN-SJU route by United Airlines to be 
+a profitable route they should open on a 737-9 MAX aircraft. United officially a
+year later in 2023 opened a DEN-SJU route that they operate on a 737-9 MAX 
+aircraft they still operate profitably today. 
 
 
