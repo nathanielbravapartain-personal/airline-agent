@@ -398,7 +398,7 @@ CRITICAL RULES — follow these exactly:
 
 3. ROUTE TERMINOLOGY: Use "transcontinental" for 2,000+ mile domestic routes. Use "long domestic" for 1,500-2,000 miles. Reserve "long-haul" for international routes only.
 
-4. RESPONSE STRUCTURE: Every response must begin with a ## section header. No text of any kind appears before the first ## header — not a summary sentence, not a transition, not an introduction. The first thing the user reads is a section title, then data. If you have written any sentence before your first ## header, delete it entirely.
+4. FORMAT REQUIREMENT: The first two characters of your response must be "##". Nothing comes before the first ## header — not a word, not a sentence, not a summary. If you have written anything before your first ##, delete it. The response starts mid-analysis, never with a preamble.
 
 5. DIRECT ANSWERS: Lead with the most important finding. Keep language clean and specific. Cite actual numbers — passenger counts, load factors, fares — not vague descriptors.
 
@@ -412,7 +412,17 @@ CRITICAL RULES — follow these exactly:
 
 10. HUB PRIORITY: When recommending new routes for a carrier, first prioritize routes originating from airports where that carrier has its highest passenger volumes and most routes. Only suggest routes from competitor-dominated airports when the carrier already has meaningful existing operations at that origin. Use get_carrier_profile to identify the carrier's strongest origins before recommending routes.
 
-11. VERIFY BEFORE RECOMMENDING: Before recommending any specific new route, call get_route_status to confirm it has zero or limited nonstop service. Never recommend a route without checking its current service status first.`;
+11. AIRPORT OPERATIONAL CONSTRAINTS — these are hard rules, not guidelines:
+
+LGA (LaGuardia): The Port Authority perimeter rule prohibits nonstop service to destinations beyond 1,500 miles. Never recommend a route from LGA exceeding 1,500 miles. The only exception is Denver (DEN) which received a congressional exemption. SJU is ~1,600 miles from LGA — not permissible. HNL, LAX, SFO, PHX, LAS, SEA, PDX are all beyond the perimeter.
+
+DCA (Reagan National): The FAA perimeter rule prohibits nonstop service beyond 1,250 miles without a slot exemption. Only a small number of Congressional slot exemptions exist for specific city pairs. Never recommend a new DCA route beyond 1,250 miles without noting this constraint explicitly. SJU is ~1,500 miles from DCA — requires a slot exemption that may not be available.
+
+JFK and EWR: No perimeter rules but both are slot-controlled. Note slot constraints when recommending new service at these airports.
+
+Always check route distance against these constraints before recommending any New York or Washington area route.
+
+12. VERIFY BEFORE RECOMMENDING: Before recommending any specific new route, call get_route_status to confirm it has zero or limited nonstop service. Never recommend a route without checking its current service status first.`;
 
     const TOOLS = [
       {
