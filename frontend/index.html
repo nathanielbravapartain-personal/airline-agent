@@ -398,14 +398,7 @@ CRITICAL RULES — follow these exactly:
 
 3. ROUTE TERMINOLOGY: Use "transcontinental" for 2,000+ mile domestic routes. Use "long domestic" for 1,500-2,000 miles. Reserve "long-haul" for international routes only.
 
-4. NO TRANSITION SENTENCES: If your response's first word is "I", "Now", "Here", "Let", "Based", "Given", or "The", rewrite the opening. Your response must begin with a route, a carrier, a number, or a direct claim. Backend errors should be noted in a single parenthetical at the end of the response, not at the beginning.
-
-Bad: "I now have sufficient data. Let me synthesize."
-Bad: "Here is the full recommendation."
-Good: "Delta operates 3,026 routes at 78.5% load factor."
-Good: "Three routes stand out as high-priority opportunities."
-
-Make it sound human!! 
+4. FIRST WORD RULE: Your response's first word must be a proper noun (airline name, airport code, city name), a number, or a route name. If it is not, rewrite the opening. This is not negotiable. "All", "I", "Now", "Here", "The", "Let", "Given", "Based" are all illegal first words.
 
 5. DIRECT ANSWERS: Lead with the most important finding. Keep language clean and specific. Cite actual numbers — passenger counts, load factors, fares — not vague descriptors.
 
@@ -415,7 +408,11 @@ Make it sound human!!
 
 8. TOOL-FIRST: Call tools before writing analysis. For compound questions, call all relevant tools first, then synthesize.
 
-9. VERIFY BEFORE RECOMMENDING: Before recommending any specific new route, call get_route_status to confirm it has zero or limited nonstop service. Never recommend a route without checking its current service status first.`;
+9. AIRCRAFT TYPE CONSISTENCY: When recommending redeployment, the aircraft type pulled must match the aircraft type needed for the new route. A narrowbody redeployment cannot provide a widebody. Never suggest that reducing narrowbody frequency "frees up" a widebody aircraft.
+
+10. HUB PRIORITY: When recommending new routes for a carrier, first prioritize routes originating from airports where that carrier has its highest passenger volumes and most routes. Only suggest routes from competitor-dominated airports when the carrier already has meaningful existing operations at that origin. Use get_carrier_profile to identify the carrier's strongest origins before recommending routes.
+
+11. VERIFY BEFORE RECOMMENDING: Before recommending any specific new route, call get_route_status to confirm it has zero or limited nonstop service. Never recommend a route without checking its current service status first.`;
 
     const TOOLS = [
       {
@@ -589,6 +586,8 @@ Make it sound human!!
       "Compare Delta and United's head-to-head competitive overlap.",
       "What's the best aircraft for a new ORD-SJU service?"
     ];
+    
+
 
     // ── Tool executor ─────────────────────────────────────────────────────────
     async function executeTool(toolName, input, fleet) {
@@ -831,10 +830,12 @@ Make it sound human!!
       }, []);
 
       useEffect(() => {
-        if (messagesWrapRef.current) {
+        if (messages.length === 0) return;
+        const lastMsg = messages[messages.length - 1];
+        if (lastMsg.type === 'user') {
           messagesWrapRef.current.scrollTop = messagesWrapRef.current.scrollHeight;
         }
-      }, [messages]);
+      }, [messages.length]);
 
       const sendMessage = useCallback(async (text) => {
         if (!text.trim() || isLoading) return;
